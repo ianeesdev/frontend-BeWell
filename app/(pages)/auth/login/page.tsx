@@ -7,11 +7,10 @@ import GoogleSvg from "@/components/svgs/GoogleSvg";
 
 import Image from "next/image";
 import Link from "next/link";
+
 export default function Page() {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
 
   return (
     <div className="bg-lilacWhite w-full flex">
@@ -21,22 +20,16 @@ export default function Page() {
         </h1>
         <div className="w-[50%] mx-auto flex flex-col gap-12">
           <div className="flex justify-between items-center">
-            <h2 className="text-4xl text-main font-semibold">Register</h2>
+            <h2 className="text-4xl text-main font-semibold">Login</h2>
             <Link
-              href={"/auth/login"}
+              href={"/auth/register"}
               className="text-lg text-deepAqua font-medium"
             >
-              Login
+              Register
             </Link>
           </div>
           <div>
             <form action="" className="flex flex-col gap-7">
-              <InputField
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
               <InputField
                 type="email"
                 placeholder="Email"
@@ -49,15 +42,12 @@ export default function Page() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <InputField
-                type="password"
-                placeholder="Confirm Password"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-              />
-
-              <Button children={"Create"} variant="primary" />
+              <Button children={"Login"} variant="primary" />
             </form>
+            <p className="text-gray-400 p-4">
+              Forgot Password?
+              <Link href={"/auth/forget-password"} className="text-deepAqua font-bold text-lg ms-2">Click Here</Link>
+            </p>
           </div>
 
           <div className="-mt-3">
@@ -78,9 +68,7 @@ export default function Page() {
       </div>
       <div className="w-1/2 flex flex-col justify-center items-center">
         <div className="p-[5rem] text-center w-[75%] mx-auto space-y-3">
-          <h1 className="font-bold text-main text-3xl">
-            Create an account and get started!
-          </h1>
+          <h1 className="font-bold text-main text-3xl">Welcome Back!</h1>
           <p className="text-main font-medium text-lg">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime
             mollitia, molestiae quas vel sint commodi repudiandae{" "}
