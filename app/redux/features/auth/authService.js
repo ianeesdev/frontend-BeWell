@@ -1,0 +1,94 @@
+import axios from "axios";
+
+const API_URL = "http://127.0.0.1:5000/auth/";
+
+// Register user
+const register = async (userData) => {
+  const response = await axios.post(`${API_URL}signup`, userData);
+  return response.data;
+};
+
+// Login user
+const login = async (userData) => {
+  const response = await axios.post(`${API_URL}login`, userData);
+
+  if (response.data) {
+    localStorage.setItem("user", JSON.stringify(response.data));
+  }
+
+  return response.data;
+};
+
+// Login with google
+const googleAuth = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get(`${API_URL}getUser`, config);
+
+  if (response.data) {
+    localStorage.setItem("user", JSON.stringify(response.data));
+  }
+
+  return response.data;
+};
+
+// forgot passowrd
+const forgotPassword = async (email) => {
+  const response = await axios.post(`${API_URL}forgot-password`, email);
+
+  if (response.data) {
+    localStorage.setItem("user", JSON.stringify(response.data));
+  }
+
+  return response.data;
+};
+
+// reset passowrd
+const resetPassword = async (data) => {
+  const response = await axios.post(API_URL + `resetPassword`, data);
+
+  if (response.data) {
+    localStorage.setItem("user", JSON.stringify(response.data));
+  }
+
+  return response.data;
+};
+
+// Onboarding question
+const saveOnboardingResponses = async (token, data) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(API_URL + `onboardingResponses`, data, config);
+
+  if (response.data) {
+    localStorage.setItem("user", JSON.stringify(response.data));
+  }
+
+  return response.data;
+};
+
+// Logout user
+const logout = () => {
+  localStorage.clear();
+  localStorage.removeItem("user");
+};
+
+const authService = {
+  register,
+  logout,
+  forgotPassword,
+  resetPassword,
+  login,
+  googleAuth,
+  saveOnboardingResponses
+};
+
+export default authService;

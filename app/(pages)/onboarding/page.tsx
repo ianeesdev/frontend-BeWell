@@ -1,23 +1,52 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@/components/common/Button";
-import Image from "next/image";
+import { Progress } from "@/components/ui/progress";
 
+import Image from "next/image";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import { IoRadioButtonOnSharp } from "react-icons/io5";
 
-import { Progress } from "@/components/ui/progress";
 import onboardingSliders from "@/lib/onboardingQuestions";
+
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { saveOnboardingResponses } from "../../redux/features/auth/authSlice";
 
 export default function Page() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<(number | null)[]>([]);
+  const [answers, setAnswers] = useState<
+    { question: string; option: number | null }[]
+  >([]);
   const currentQuestion = onboardingSliders[currentQuestionIndex];
+
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state: any) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      alert(message);
+    }
+
+    if (isSuccess) {
+      router.push("/appointment");
+    }
+  }, [user, isError, isSuccess, message, router, dispatch]);
 
   const handleNext = () => {
     if (currentQuestionIndex < onboardingSliders.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      const payload = {
+        userId: user?._id,
+        onboardingResponses: answers,
+      };
+      dispatch(saveOnboardingResponses(payload));
     }
   };
 
@@ -29,7 +58,10 @@ export default function Page() {
 
   const handleOptionClick = (index: number) => {
     const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = index;
+    updatedAnswers[currentQuestionIndex] = {
+      question: currentQuestion.title,
+      option: index,
+    };
     setAnswers(updatedAnswers);
   };
 
@@ -60,12 +92,13 @@ export default function Page() {
                 <div
                   key={index}
                   className={`${
-                    answers[currentQuestionIndex] === index && "bg-tertiary"
+                    answers[currentQuestionIndex]?.option === index &&
+                    "bg-tertiary"
                   } shadow-sm focus:ring-indigo-500 focus:border-indigo-500 rounded-full w-full text-lg border border-gray-300 px-6 py-4 flex justify-between items-center cursor-pointer`}
                   onClick={() => handleOptionClick(index)}
                 >
                   {option}
-                  {answers[currentQuestionIndex] === index ? (
+                  {answers[currentQuestionIndex]?.option === index ? (
                     <IoRadioButtonOnSharp size={35} className="text-deepAqua" />
                   ) : (
                     <FaArrowRightLong className="text-deepAqua" size={35} />
@@ -79,7 +112,11 @@ export default function Page() {
                 </Button>
                 <Button onClick={handleNext}>
                   <div className="flex items-center gap-8">
-                    <p>Continue</p>
+                    <p>
+                      {currentQuestionIndex < onboardingSliders.length - 1
+                        ? "Next"
+                        : `${isLoading ? "Saving..." : "Continue"}`}
+                    </p>
                     <span className="bg-white rounded-full p-2">
                       <FaArrowRightLong size={15} className="text-deepAqua" />
                     </span>

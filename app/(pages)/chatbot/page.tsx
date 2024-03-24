@@ -19,7 +19,7 @@ export default function Page() {
         <Navbar />
       </div>
       <div className="w-[92%] mx-auto mt-[3rem]">
-        {true ? (
+        {false ? (
           <div className="flex flex-col items-center justify-center gap-5">
             <div>
               <Image

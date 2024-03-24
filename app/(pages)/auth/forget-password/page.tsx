@@ -1,16 +1,44 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
+import { Progress } from "@/components/ui/progress";
+
 import Image from "next/image";
 import Link from "next/link";
 
 import { FaAngleLeft } from "react-icons/fa6";
-import { Progress } from "@/components/ui/progress";
+
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { forgotPassword } from "../../../redux/features/auth/authSlice";
 
 export default function Page() {
   const [email, setEmail] = useState("");
+
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { isLoading, isError, isSuccess, message } = useSelector(
+    (state: any) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      alert(message);
+    }
+
+    if (isSuccess) {
+      router.push("/auth/verify-otp")
+    }
+
+  }, [isError, isSuccess, message, router, dispatch]);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    dispatch(forgotPassword({email: email}));
+  };
 
   return (
     <div className="bg-lilacWhite w-full flex">
@@ -35,14 +63,14 @@ export default function Page() {
             </div>
           </div>
           <div>
-            <form action="" className="flex flex-col gap-9">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-9">
               <InputField
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <Button children={"Get Code"} variant="primary" />
+              <Button type="submit">{isLoading? "Sending code..." : "Get Code"}</Button>
             </form>
           </div>
         </div>

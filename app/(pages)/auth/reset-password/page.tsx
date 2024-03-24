@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
 import Image from "next/image";
@@ -9,9 +9,44 @@ import Link from "next/link";
 import { FaAngleLeft } from "react-icons/fa6";
 import { Progress } from "@/components/ui/progress";
 
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { resetPassword } from "../../../redux/features/auth/authSlice";
+
 export default function Page() {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state: any) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      alert(message);
+    }
+
+    if (user?.isUpdated) {
+      router.push("/auth/login");
+    }
+  }, [isError, isSuccess, message, router, dispatch]);
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    if (password !== password2) {
+      alert("Passwords do not match");
+    } else {
+      const data = {
+        id: user?._id,
+        token: user?.token,
+        password,
+      };
+      dispatch(resetPassword(data));
+    }
+  };
 
   return (
     <div className="bg-lilacWhite w-full flex">
@@ -30,12 +65,13 @@ export default function Page() {
                 Reset Password
               </h2>
               <p className="text-lg">
-              Set the new password for your account so you can login and access all the features.
+                Set the new password for your account so you can login and
+                access all the features.
               </p>
             </div>
           </div>
           <div>
-            <form action="" className="flex flex-col gap-9">
+            <form onSubmit={onSubmit} className="flex flex-col gap-9">
               <InputField
                 type="password"
                 placeholder="New Password"
@@ -48,7 +84,9 @@ export default function Page() {
                 value={password2}
                 onChange={(e) => setPassword2(e.target.value)}
               />
-              <Button children={"Reset Password"} variant="primary" />
+              <Button type="submit">
+                {isLoading ? "Resetting..." : "Reset Password"}
+              </Button>
             </form>
           </div>
         </div>

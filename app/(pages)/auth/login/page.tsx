@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
 import GoogleSvg from "@/components/svgs/GoogleSvg";
@@ -8,9 +8,41 @@ import GoogleSvg from "@/components/svgs/GoogleSvg";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { login } from "../../../redux/features/auth/authSlice";
+
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state: any) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      alert(message);
+    }
+
+    if (user?.isLoggedIn) {
+      user?.onboarded ? router.push("/") : router.push("/onboarding")
+    }
+  }, [user, isError, isSuccess, message, router, dispatch]);
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+
+    const userData = {
+      email,
+      password,
+    };
+
+    dispatch(login(userData));
+  };
 
   return (
     <div className="bg-lilacWhite w-full flex">
@@ -29,7 +61,7 @@ export default function Page() {
             </Link>
           </div>
           <div>
-            <form action="" className="flex flex-col gap-7">
+            <form onSubmit={onSubmit} className="flex flex-col gap-7">
               <InputField
                 type="email"
                 placeholder="Email"
@@ -42,11 +74,18 @@ export default function Page() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Button children={"Login"} variant="primary" />
+              <Button type="submit">
+                {isLoading ? "Loading..." : "Login"}
+              </Button>
             </form>
             <p className="text-gray-400 p-4">
               Forgot Password?
-              <Link href={"/auth/forget-password"} className="text-deepAqua font-bold text-lg ms-2">Click Here</Link>
+              <Link
+                href={"/auth/forget-password"}
+                className="text-deepAqua font-bold text-lg ms-2"
+              >
+                Click Here
+              </Link>
             </p>
           </div>
 
@@ -59,10 +98,13 @@ export default function Page() {
           </div>
 
           <Button variant="outline">
-            <a href={""} className="flex items-center justify-center gap-x-2">
+            <Link
+              href={"http://127.0.0.1:5000/auth/google"}
+              className="flex items-center justify-center gap-x-2"
+            >
               <GoogleSvg />
               Sign Up with Google
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

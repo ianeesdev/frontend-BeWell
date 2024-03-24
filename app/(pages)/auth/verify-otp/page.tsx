@@ -1,16 +1,45 @@
 "use client";
 
 import React, { useState } from "react";
-import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
+import { Progress } from "@/components/ui/progress";
+
 import Image from "next/image";
 import Link from "next/link";
 
 import { FaAngleLeft } from "react-icons/fa6";
-import { Progress } from "@/components/ui/progress";
+
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+
+  const { user } = useSelector(
+    (state: any) => state.auth
+  );
+
+  const handleInputChange = (index: number, value: string) => {
+    const updatedOtp = otp.split("");
+    updatedOtp[index] = value;
+    setOtp(updatedOtp.join(""));
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setOtp("");
+
+    if (user?.otp == otp) {
+      router.push("/auth/reset-password")
+    } else {
+      alert("Invalid OTP. Try Again.")
+    }
+    setIsLoading(false);
+  };
 
   return (
     <div className="bg-lilacWhite w-full flex">
@@ -34,7 +63,7 @@ export default function Page() {
             </div>
           </div>
           <div>
-            <form action="" className="flex flex-col gap-12">
+            <form onSubmit={onSubmit} className="flex flex-col gap-12">
               <div className="flex gap-4 justify-center">
                 {[0, 1, 2, 3].map((index) => (
                   <div className="w-20 h-20">
@@ -44,12 +73,15 @@ export default function Page() {
                       className="w-full h-full text-center px-5 outline-none rounded-xl border border-gray-300 text-3xl font-bold text-deepAqua bg-white focus:border-none focus:bg-tertiary focus:ring-2 ring-deepAqua "
                       type="text"
                       maxLength={1}
+                      onChange={(e) =>
+                        handleInputChange(index, e.target.value)
+                      }
                       required
                     />
                   </div>
                 ))}
               </div>
-              <Button children={"Continue"} variant="primary" />
+              <Button type="submit">{isLoading ? "Verifying" : "Continue"}</Button>
             </form>
           </div>
         </div>

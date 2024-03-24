@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
 import GoogleSvg from "@/components/svgs/GoogleSvg";
@@ -8,11 +8,48 @@ import GoogleSvg from "@/components/svgs/GoogleSvg";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { register } from "../../../redux/features/auth/authSlice";
+
 export default function Page() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state: any) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      alert("Error");
+    }
+
+    if (isSuccess) {
+      router.push("/auth/login");
+    }
+  }, [user, isError, isSuccess, message, router, dispatch]);
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+
+    if (password !== password2) {
+      alert("Passwords do not match");
+    } else {
+      const userData = {
+        username,
+        email,
+        password,
+      };
+
+      dispatch(register(userData));
+    }
+  };
 
   return (
     <div className="bg-lilacWhite w-full flex">
@@ -31,7 +68,7 @@ export default function Page() {
             </Link>
           </div>
           <div>
-            <form action="" className="flex flex-col gap-7">
+            <form onSubmit={onSubmit} className="flex flex-col gap-7">
               <InputField
                 type="text"
                 placeholder="Username"
@@ -57,7 +94,7 @@ export default function Page() {
                 onChange={(e) => setPassword2(e.target.value)}
               />
 
-              <Button children={"Create"} variant="primary" />
+<Button type="submit">{isLoading ? "Creating..." : "Create"}</Button>
             </form>
           </div>
 
@@ -70,10 +107,10 @@ export default function Page() {
           </div>
 
           <Button variant="outline">
-            <a href={""} className="flex items-center justify-center gap-x-2">
+            <Link href={"http://127.0.0.1:5000/auth/google"} className="flex items-center justify-center gap-x-2">
               <GoogleSvg />
               Sign Up with Google
-            </a>
+            </Link>
           </Button>
         </div>
       </div>
