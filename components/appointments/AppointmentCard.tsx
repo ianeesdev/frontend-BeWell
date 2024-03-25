@@ -31,7 +31,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </Avatar>
           <div>
             <p className="text-xl text-main font-medium">{name}</p>
-            <p className="text-lg text-faded">{`${specialty}, ${location}`}</p>
+            <p className="text-faded">{`${specialty}`}</p>
+            <p className="text-faded">{`${location}`}</p>
           </div>
         </div>
         <div className="border-l-2 border-gray-300 flex justify-between items-center px-8 w-[70%] ms-auto">
@@ -44,10 +45,10 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </div>
 
           <div className="flex gap-4">
-            <Button variant="outline" className="px-10 py-4">
+            <Button variant="outline" className="px-10 py-2">
               Join Now
             </Button>
-            <Button variant="primary" className="px-10 py-4">
+            <Button variant="primary" className="px-10 py-2">
               View Details
             </Button>
           </div>

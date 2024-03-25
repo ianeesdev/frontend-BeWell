@@ -1,23 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/common/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { GoArrowLeft } from "react-icons/go";
 import { TbStarHalfFilled } from "react-icons/tb";
-import Invoice from "@/components/appointments/Invoice";
 import Button from "@/components/common/Button";
 import ReviewCard from "@/components/appointments/ReviewCard";
 import AppointmentDrawer from "@/components/appointments/AppointmentDrawer";
+
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
 
 export default function Page() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { therapists } = useSelector((state: any) => state.therapists);
+  const [therapist, setTherapist] = useState(null);
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
+
+  const searchParams = useSearchParams();
+  const therapistId = searchParams.get("therapistId");
+
+  useEffect(() => {
+    const foundTherapist = therapists.find((t: any) => t._id === therapistId);
+    if (foundTherapist) {
+      setTherapist(foundTherapist);
+    }
+  }, [therapistId, therapists]);
 
   return (
     <div className="bg-paleGrey relative">
@@ -42,14 +56,16 @@ export default function Page() {
                 <div>
                   <div className="flex gap-2">
                     <p className="text-2xl text-main font-bold">
-                      Muhammad Anees
+                      {therapist?.name}
                     </p>
                     <div className="flex gap-1 items-center">
                       <TbStarHalfFilled size={25} className="text-yellow-300" />
                       <p>4.8 (86 reviews)</p>
                     </div>
                   </div>
-                  <p className="text-lg text-faded">Neuro, Isb</p>
+                  <p className="text-lg text-faded">
+                    {therapist?.specialty}, {therapist?.location}
+                  </p>
                 </div>
                 <div>
                   <Button variant="secondary" className="text-md px-6 py-3">
@@ -59,11 +75,15 @@ export default function Page() {
               </div>
               <div className="flex gap-8">
                 <div className="p-6 drop-shadow-xl bg-paleGrey rounded-xl text-center">
-                  <p className="text-4xl text-deepAqua font-bold">350+</p>
+                  <p className="text-4xl text-deepAqua font-bold">
+                    {therapist?.totalPatients}+
+                  </p>
                   <p className="text-faded text-md">Patients</p>
                 </div>
                 <div className="p-6 drop-shadow-xl bg-paleGrey rounded-xl text-center">
-                  <p className="text-4xl text-deepAqua font-bold">15+</p>
+                  <p className="text-4xl text-deepAqua font-bold">
+                    {therapist?.experience}+
+                  </p>
                   <p className="text-faded text-md">Exp. Years</p>
                 </div>
               </div>
@@ -73,19 +93,15 @@ export default function Page() {
           <div className="flex">
             <div className="flex flex-col gap-3">
               <h2 className="text-xl font-semibold">About Therapist</h2>
-              <p className="max-w-[70%]">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                labore
-              </p>
+              <p className="max-w-[70%]">{therapist?.about}</p>
             </div>
             <div className="w-full flex justify-end">
               <div className="p-6 drop-shadow-xl bg-paleGrey rounded-xl flex items-center gap-10">
                 <div>
                   <p className="text-faded text-md">Price</p>
                   <p className="text-3xl font-regular text-main">
-                    <span className="font-bold">$15/</span>session
+                    <span className="font-bold">${therapist?.hourlyRate}/</span>
+                    hour
                   </p>
                 </div>
                 <div>

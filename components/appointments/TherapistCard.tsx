@@ -5,6 +5,7 @@ import Button from "../common/Button";
 import Link from "next/link";
 
 interface TherapistCardProps {
+  therapistId: string;
   name: string;
   specialty: string;
   location: string;
@@ -12,6 +13,7 @@ interface TherapistCardProps {
 }
 
 const TherapistCard: React.FC<TherapistCardProps> = ({
+  therapistId,
   name,
   specialty,
   location,
@@ -27,11 +29,14 @@ const TherapistCard: React.FC<TherapistCardProps> = ({
           </Avatar>
           <div>
             <p className="text-xl text-main font-medium">{name}</p>
-            <p className="text-lg text-faded">{`${specialty}, ${location}`}</p>
+            <p className="text-[14px] text-faded">{specialty}</p>
+            <p className="text-[14px] text-faded">{location}</p>
           </div>
         </div>
         <div>
-          <Button variant="tertiary"><Link href="/therapist/profile">View Details</Link></Button>
+          <Button variant="tertiary">
+            <Link href={`/therapist/profile/?therapistId=${therapistId}`}>View Details</Link>
+          </Button>
         </div>
       </div>
       <div className="flex gap-1 items-center px-2 pt-1">

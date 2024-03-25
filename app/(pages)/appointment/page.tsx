@@ -1,15 +1,40 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/common/Navbar";
 import TherapistCard from "@/components/appointments/TherapistCard";
 import AppointmentCard from "@/components/appointments/AppointmentCard";
+import Invoice from "@/components/appointments/Invoice";
 
 import { GoArrowLeft } from "react-icons/go";
-import Invoice from "@/components/appointments/Invoice";
+
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { getAppointments } from "../../redux/features/appointments/appointmentSlice";
+import { getAllTherapists } from "../../redux/features/therapist/therapistSlice";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState("upcoming");
+
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { user } = useSelector((state: any) => state.auth);
+  const { therapists } = useSelector((state: any) => state.therapists);
+  const { appointments, isLoading, isError, isSuccess, message } = useSelector(
+    (state: any) => state.appointments
+  );
+
+  useEffect(() => {
+    if (isError) {
+      alert(message);
+    }
+
+    if (user?.isLoggedIn) {
+      dispatch(getAppointments(user?._id));
+      dispatch(getAllTherapists());
+    } else router.push("/auth/login");
+  }, [user, isError, isSuccess, message, router, dispatch]);
 
   return (
     <div>
@@ -63,7 +88,8 @@ export default function Page() {
                   false ? "flex justify-center items-center p-8" : "p-5"
                 } min-h-[20rem] border-[1px] border-gray-300 rounded-3xl`}
               >
-                {false ? (
+                {appointments?.upcoming?.length === 0 &&
+                appointments?.history?.length === 0 ? (
                   <p>You don’t have any appointment.</p>
                 ) : (
                   <div className="flex flex-col gap-5">
@@ -92,32 +118,33 @@ export default function Page() {
                       </div>
                     </div>
                     <div className="flex flex-col gap-3">
-                      <AppointmentCard
-                        name="Anees"
-                        specialty="Neuro"
-                        location="Isb"
-                        rating={4.5}
-                        appointmentDate={"Monday, OCT 20"}
-                        appointmentTime={"08:00 - 10:00"}
-                      />
-
-                      <AppointmentCard
-                        name="Anees"
-                        specialty="Neuro"
-                        location="Isb"
-                        rating={4.5}
-                        appointmentDate={"Monday, OCT 20"}
-                        appointmentTime={"08:00 - 10:00"}
-                      />
-
-                      <AppointmentCard
-                        name="Anees"
-                        specialty="Neuro"
-                        location="Isb"
-                        rating={4.5}
-                        appointmentDate={"Monday, OCT 20"}
-                        appointmentTime={"08:00 - 10:00"}
-                      />
+                      {activeTab === "upcoming"
+                        ? appointments?.upcoming?.map(
+                            (appointment: any, index: any) => (
+                              <AppointmentCard
+                                key={index}
+                                name={appointment?.therapistId.name}
+                                specialty={appointment?.therapistId.specialty}
+                                location={appointment?.therapistId.location}
+                                rating={4.5}
+                                appointmentDate={"Monday, OCT 20"}
+                                appointmentTime={"08:00 - 10:00"}
+                              />
+                            )
+                          )
+                        : appointments?.history?.map(
+                            (appointment: any, index: any) => (
+                              <AppointmentCard
+                                key={index}
+                                name={appointment?.therapistId.name}
+                                specialty={appointment?.therapistId.specialty}
+                                location={appointment?.therapistId.location}
+                                rating={4.5}
+                                appointmentDate={"Monday, OCT 20"}
+                                appointmentTime={"08:00 - 10:00"}
+                              />
+                            )
+                          )}
                     </div>
                   </div>
                 )}
@@ -125,24 +152,16 @@ export default function Page() {
             </div>
             <div className="w-[30%] flex flex-col gap-4">
               <h1 className="text-3xl font-semibold">Top Therapists</h1>
-              <TherapistCard
-                name="Anees"
-                specialty="Neuro"
-                location="Isb"
-                rating={4.5}
-              />
-              <TherapistCard
-                name="Anees"
-                specialty="Neuro"
-                location="Isb"
-                rating={4.5}
-              />
-              <TherapistCard
-                name="Anees"
-                specialty="Neuro"
-                location="Isb"
-                rating={4.5}
-              />
+              {therapists?.map((therapist: any, index: any) => (
+                <TherapistCard
+                  key={index}
+                  therapistId={therapist?._id}
+                  name={therapist?.name}
+                  specialty={therapist?.specialty}
+                  location={therapist?.location}
+                  rating={4.5}
+                />
+              ))}
             </div>
           </>
         )}

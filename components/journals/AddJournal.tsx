@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { RxCross2 } from "react-icons/rx";
-import { Calendar } from "@/components/ui/calendar";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
+
+import { useDispatch, useSelector } from "react-redux";
+import { addJournal } from "../../app/redux/features/resource-center/resourceCenterSlice";
 
 interface AddJournalProps {
   onClose: () => void;
 }
 
 const AddJournal: React.FC<AddJournalProps> = ({ onClose }) => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state: any) => state.auth);
+
   const [title, setTitle] = useState("");
   const [journalText, setJournalText] = useState("");
+  
+  const handleSave = () => {
+    dispatch(addJournal({title: title, text: journalText, createdBy: user._id}));
+    onClose();
+  }
 
   return (
     <div className="relative">
@@ -46,8 +56,8 @@ const AddJournal: React.FC<AddJournalProps> = ({ onClose }) => {
             />
 
             <div className="flex justify-between mt-2">
-              <Button variant="outline">Cancel</Button>
-              <Button variant="primary">Save</Button>
+              <Button variant="outline" onClick={onClose}>Cancel</Button>
+              <Button variant="primary" onClick={handleSave}>Save</Button>
             </div>
           </form>
         </div>

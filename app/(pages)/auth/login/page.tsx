@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { login } from "../../../redux/features/auth/authSlice";
+import { getAllTherapists } from "../../../redux/features/therapist/therapistSlice";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -23,13 +24,14 @@ export default function Page() {
     (state: any) => state.auth
   );
 
-  useEffect(() => {
+  useEffect(() => { 
     if (isError) {
       alert(message);
     }
 
     if (user?.isLoggedIn) {
-      user?.onboarded ? router.push("/") : router.push("/onboarding")
+      dispatch(getAllTherapists());
+      user?.onboarded ? router.push("/") : router.push("/onboarding");
     }
   }, [user, isError, isSuccess, message, router, dispatch]);
 
