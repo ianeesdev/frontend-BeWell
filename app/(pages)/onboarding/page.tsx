@@ -33,7 +33,7 @@ export default function Page() {
       alert(message);
     }
 
-    if (isSuccess) {
+    if (isSuccess && user?.onboarded) {
       router.push("/appointment");
     }
   }, [user, isError, isSuccess, message, router, dispatch]);

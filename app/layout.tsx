@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { poppins } from "@/app/ui/fonts";
 import "@/app/ui/globals.css";
-
 import { ReduxProvider } from "../app/redux/provider";
 
 export const metadata: Metadata = {

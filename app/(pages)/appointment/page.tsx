@@ -90,7 +90,7 @@ export default function Page() {
               >
                 {appointments?.upcoming?.length === 0 &&
                 appointments?.history?.length === 0 ? (
-                  <p>You don’t have any appointment.</p>
+                  <p className="text-center">You don’t have any appointment.</p>
                 ) : (
                   <div className="flex flex-col gap-5">
                     <div className="flex items-center justify-center">

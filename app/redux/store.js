@@ -4,6 +4,7 @@ import paymentReducer from "./features/payment/paymentSlice";
 import therapistReducer from "./features/therapist/therapistSlice";
 import appointmentReducer from "./features/appointments/appointmentSlice";
 import resourceCenterReducer from "./features/resource-center/resourceCenterSlice";
+import communityForumReducer from './features/communityForum/communitySlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     therapists: therapistReducer,
     appointments: appointmentReducer,
     resourceCenter: resourceCenterReducer,
+    communityForum: communityForumReducer
   },
 })

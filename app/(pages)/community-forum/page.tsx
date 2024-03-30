@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/common/Navbar";
 import InputField from "@/components/common/InputField";
 import Button from "@/components/common/Button";
@@ -15,8 +15,46 @@ import { FiSearch } from "react-icons/fi";
 import { GoHeart } from "react-icons/go";
 import { BsThreeDots } from "react-icons/bs";
 
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import {
+  addPost,
+  getPosts,
+} from "../../redux/features/communityForum/communitySlice";
+
 export default function Page() {
   const [postText, setPostText] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
+
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { user } = useSelector((state: any) => state.auth);
+  const { posts, isLoading, isError, isSuccess, message } = useSelector(
+    (state: any) => state.communityForum
+  );
+
+  const handleAddPost = () => {
+    const payload = {
+      isAnonymous: isAnonymous,
+      text: postText,
+      author: user?._id,
+    };
+
+    dispatch(addPost(payload));
+    setPostText("");
+    setIsAnonymous(false);
+  };
+
+  useEffect(() => {
+    if (isError) {
+      alert(message);
+    }
+
+    if (user?.isLoggedIn) {
+      dispatch(getPosts());
+    } else router.push("/auth/login");
+  }, [user, isError, message, dispatch]);
 
   return (
     <div className="overflow-hidden h-screen">
@@ -90,96 +128,51 @@ export default function Page() {
                     />
                     <div className="flex justify-end items-center gap-4">
                       <div className="flex gap-1 items-center">
-                        <Checkbox className="data-[state=checked]:bg-deepAqua" />
+                        <Checkbox
+                          className="data-[state=checked]:bg-deepAqua"
+                          checked={isAnonymous}
+                          onCheckedChange={() => setIsAnonymous(!isAnonymous)}
+                        />
                         <p>Post Anonymously</p>
                       </div>
-                      <Button className="rounded-xl">Post</Button>
+                      <Button className="rounded-xl" onClick={handleAddPost}>
+                        Post
+                      </Button>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="overflow-y-auto h-[40rem] pb-[8rem]">
-                <div className="flex flex-col gap-2 pb-3 border-b-2 border-gray-200 p-4 relative">
-                  <div className="border-l-2 border-gray-200 ms-5 ps-8">
-                    <Avatar className="h-10 w-10 absolute left-4">
-                      <AvatarImage src="https://github.com/shadcn.png" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="flex justify-between items-center">
-                        <h2 className="text-lg font-semibold">Muneeb</h2>
-                        <BsThreeDots size={30} />
-                      </div>
-                      <p className="max-w-[95%]">
-                        It took so long for this desktop version of Threads to
-                        come out, but I'm really excited to start posting tips
-                        and content directly from the computer
-                      </p>
-                      <div className="mt-3 flex gap-4 items-center">
-                        <GoHeart size={22} />
-                        <CommentSvg />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="ms-5 ps-8">
-                    <p className="text-faded">30 likes . 10 replies</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2 pb-3 border-b-2 border-gray-200 p-4 relative">
-                  <div className="border-l-2 border-gray-200 ms-5 ps-8">
-                    <Avatar className="h-10 w-10 absolute left-4">
-                      <AvatarImage src="https://github.com/shadcn.png" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="flex justify-between items-center">
-                        <h2 className="text-lg font-semibold">Usman</h2>
-                        <BsThreeDots size={30} />
-                      </div>
-                      <p className="max-w-[95%]">
-                        guys, just see that now we have a "Save for Later" I've
-                        been waiting for this so much
-                      </p>
-                      <div className="mt-3 flex gap-4 items-center">
-                        <GoHeart size={22} />
-                        <CommentSvg />
+                {posts && posts?.map((post: any, index: any) => (
+                  <div
+                    key={index}
+                    className="flex flex-col gap-2 pb-3 border-b-2 border-gray-200 p-4 relative"
+                  >
+                    <div className="border-l-2 border-gray-200 ms-5 ps-8">
+                      <Avatar className="h-10 w-10 absolute left-4">
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="flex justify-between items-center">
+                          <h2 className="text-lg font-semibold">
+                            {post.isAnonymous ? "Anonymous" : post.author.username}
+                          </h2>
+                          <BsThreeDots size={30} />
+                        </div>
+                        <p className="max-w-[95%]">{post.text}</p>
+                        <div className="mt-3 flex gap-4 items-center">
+                          <GoHeart size={22} />
+                          <CommentSvg />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="ms-5 ps-8">
-                    <p className="text-faded">10 likes . 3 replies</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2 pb-3 border-b-2 border-gray-200 p-4 relative">
-                  <div className="border-l-2 border-gray-200 ms-5 ps-8">
-                    <Avatar className="h-10 w-10 absolute left-4">
-                      <AvatarImage src="https://github.com/shadcn.png" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="flex justify-between items-center">
-                        <h2 className="text-lg font-semibold">Fahad</h2>
-                        <BsThreeDots size={30} />
-                      </div>
-                      <p className="max-w-[95%]">
-                        I’ve been exploring ways of setting up variables in
-                        Figma if you have two different sets of global colours
-                        for light and dark themes with multiple brands. If you
-                        want to learn more about it, DM me, please
-                      </p>
-                      <div className="mt-3 flex gap-4 items-center">
-                        <GoHeart size={22} />
-                        <CommentSvg />
-                      </div>
+                    <div className="ms-5 ps-8">
+                      <p className="text-faded">30 likes . 10 replies</p>
                     </div>
                   </div>
-                  <div className="ms-5 ps-8">
-                    <p className="text-faded">5 likes . 2 replies</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
