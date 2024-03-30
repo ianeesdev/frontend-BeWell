@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TbStarHalfFilled } from "react-icons/tb";
 import { LuCalendarClock } from "react-icons/lu";
 import Button from "../common/Button";
-import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 interface AppointmentCardProps {
   name: string;
@@ -23,7 +23,13 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   appointmentTime,
 }) => {
 
-  const { user, isLoading } = useSelector((state: any) => state.auth);
+  const router = useRouter();
+
+  const createMeeting = () => {
+    const meetingId = crypto.randomUUID();
+    router.push(`meeting/${meetingId}`);
+  }
+  
   return (
     <div className="rounded-3xl overflow-hidden px-5 py-2.5 border-gray-300 border-[1px]">
       <div className="flex items-center">
@@ -48,7 +54,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </div>
 
           <div className="flex gap-4">
-            <Button variant="outline" className="px-10 py-2" onClick={() => createMeeting()}>
+            <Button variant="outline" className="px-10 py-2" onClick={createMeeting}>
               Join Now
             </Button>
             <Button variant="primary" className="px-10 py-2">
