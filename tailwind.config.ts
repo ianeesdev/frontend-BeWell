@@ -28,6 +28,7 @@ const config = {
         aqua: "#F2F2F2",
         lilacWhite: "#F8F8F8",
         faded: "#9D9AB5",
+        surface: "#2D2D2F",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

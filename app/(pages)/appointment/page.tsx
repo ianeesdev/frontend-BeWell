@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { getAppointments } from "../../redux/features/appointments/appointmentSlice";
 import { getAllTherapists } from "../../redux/features/therapist/therapistSlice";
+import ChatIcon from "@/components/chats/ChatIcon";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -166,6 +167,7 @@ export default function Page() {
           </>
         )}
       </div>
+      <ChatIcon />
     </div>
   );
 }
