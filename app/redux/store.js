@@ -5,6 +5,7 @@ import therapistReducer from "./features/therapist/therapistSlice";
 import appointmentReducer from "./features/appointments/appointmentSlice";
 import resourceCenterReducer from "./features/resource-center/resourceCenterSlice";
 import communityForumReducer from './features/communityForum/communitySlice';
+import chatReducer from './features/chat-app/chatSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     therapists: therapistReducer,
     appointments: appointmentReducer,
     resourceCenter: resourceCenterReducer,
-    communityForum: communityForumReducer
+    communityForum: communityForumReducer,
+    chats: chatReducer
   },
 })

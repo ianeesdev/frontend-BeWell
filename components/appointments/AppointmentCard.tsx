@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TbStarHalfFilled } from "react-icons/tb";
@@ -5,7 +7,12 @@ import { LuCalendarClock } from "react-icons/lu";
 import Button from "../common/Button";
 import { useRouter } from "next/navigation";
 
+import { useAppContext } from "../../AppContext";
+import { useDispatch, useSelector } from "react-redux";
+import { createOrOpenChat } from "../../app/redux/features/chat-app/chatSlice";
+
 interface AppointmentCardProps {
+  therapistID: string;
   name: string;
   specialty: string;
   location: string;
@@ -15,6 +22,7 @@ interface AppointmentCardProps {
 }
 
 const AppointmentCard: React.FC<AppointmentCardProps> = ({
+  therapistID,
   name,
   specialty,
   location,
@@ -22,14 +30,22 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   appointmentDate,
   appointmentTime,
 }) => {
-
   const router = useRouter();
+  const dispatch = useDispatch();
+  const { updateChatValue } = useAppContext();
+
+  const { user } = useSelector((state: any) => state.auth);
 
   const createMeeting = () => {
     const meetingId = crypto.randomUUID();
     router.push(`meeting/${meetingId}`);
-  }
-  
+  };
+
+  const openChat = () => {
+    updateChatValue(true);
+    dispatch(createOrOpenChat({ userId: therapistID })); //TODO: no need to store current chat, when clicked, create new chat and return all the chats of user, now when user click on the individual chat, we can get the id of chat and then use that to send/receive messages
+  };
+
   return (
     <div className="rounded-3xl overflow-hidden px-5 py-2.5 border-gray-300 border-[1px]">
       <div className="flex items-center">
@@ -54,8 +70,15 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </div>
 
           <div className="flex gap-4">
-            <Button variant="outline" className="px-10 py-2" onClick={createMeeting}>
+            <Button
+              variant="outline"
+              className="px-10 py-2"
+              onClick={createMeeting}
+            >
               Join Now
+            </Button>
+            <Button variant="outline" className="px-10 py-2" onClick={openChat}>
+              Send Message
             </Button>
             <Button variant="primary" className="px-10 py-2">
               View Details

@@ -124,6 +124,7 @@ export default function Page() {
                             (appointment: any, index: any) => (
                               <AppointmentCard
                                 key={index}
+                                therapistID={appointment?.therapistId._id}
                                 name={appointment?.therapistId.name}
                                 specialty={appointment?.therapistId.specialty}
                                 location={appointment?.therapistId.location}
@@ -137,6 +138,7 @@ export default function Page() {
                             (appointment: any, index: any) => (
                               <AppointmentCard
                                 key={index}
+                                therapistID={appointment?.therapistId._id}
                                 name={appointment?.therapistId.name}
                                 specialty={appointment?.therapistId.specialty}
                                 location={appointment?.therapistId.location}

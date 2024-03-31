@@ -10,8 +10,58 @@ import Button from "@/components/common/Button";
 import QuestionBox from "@/components/chatbot/QuestionBox";
 import AnswerBox from "@/components/chatbot/AnswerBox";
 
+import axios from "axios";
+
 export default function Page() {
   const [prompt, setPrompt] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getResponse = async (event: any) => {
+    event.preventDefault();
+    setMessages([
+      ...messages,
+      {
+        id: crypto.randomUUID(),
+        text: prompt,
+        sender: "user",
+      },
+    ]);
+    setPrompt("");
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        "https://5472-154-81-224-94.ngrok-free.app",
+        {
+          input: prompt,
+          session: "hi"
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const aiResponse = response.data.ai_response;
+
+      console.log(aiResponse);
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: crypto.randomUUID(),
+          text: aiResponse,
+          sender: "bot",
+        }
+      ]);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error in sending message:", error);
+    }
+  };
 
   return (
     <div>
@@ -19,7 +69,7 @@ export default function Page() {
         <Navbar />
       </div>
       <div className="w-[92%] mx-auto mt-[3rem]">
-        {false ? (
+        {messages.length == 0 ? (
           <div className="flex flex-col items-center justify-center gap-5">
             <div>
               <Image
@@ -53,13 +103,21 @@ export default function Page() {
           </div>
         ) : (
           <div className="flex flex-col gap-1">
-            <QuestionBox questionText="What is your purpose?" />
-            <AnswerBox answerText="Al can analyze user data and behavior to create personalized experiences for individual users. This can help designers create interfaces that adapt to each user’s preferences, making the interface   more intuitive and user-friendly. Al can analyze user data and behavior to create personalized experiences for individual users. This can help designers create interfaces that adapt to each user’s preferences, making the interface more intuitive and user-friendly.Al can analyze user data and behavior to create personalized experiences for individual users" />
+            {
+              isLoading ? "Generating response" : 
+              messages.map((message, index) => (
+                message?.sender === "user" ? (
+                  <QuestionBox questionText={message?.text} />
+                ) : (
+                  <AnswerBox answerText={message.text} />
+                )
+              ))
+            }
           </div>
         )}
 
         <div className="fixed left-1/2 transform -translate-x-1/2 -translate-y-1/2 bottom-6 w-[80%] mx-auto">
-          <div className="flex gap-4 w-full">
+          <form onSubmit={getResponse} className="flex gap-4 w-full">
             <InputField
               type="text"
               className="drop-shadow-lg py-4"
@@ -68,10 +126,10 @@ export default function Page() {
               onChange={(e) => setPrompt(e.target.value)}
             />
 
-            <Button className="">
+            <Button type="submit" className="">
               <LuSendHorizonal size={20} />
             </Button>
-          </div>
+          </form>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { poppins } from "@/app/ui/fonts";
 import "@/app/ui/globals.css";
 import { ReduxProvider } from "../app/redux/provider";
+import { AppProvider } from "../AppContext";
 
 export const metadata: Metadata = {
   title: "Be Well",
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased`}>
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          <AppProvider>{children}</AppProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
