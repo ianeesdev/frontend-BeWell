@@ -4,7 +4,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import ChatScreen from "./ChatScreen";
 import ChatCard from "./ChatCard";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserChats } from "../../app/redux/features/chat-app/chatSlice";
+import { getMessages, getUserChats } from "../../app/redux/features/chat-app/chatSlice";
 
 interface ChatBoxProps {
   handleCloseClick: () => void;
@@ -15,8 +15,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({ handleCloseClick }) => {
   const [selectedChat, setSelectedChat] = useState({});
 
   const handleChatCardClick = (chat: any) => {
-    setIsChatOpen(!isChatOpen);
+    dispatch(getMessages(chat._id));
     setSelectedChat(chat);
+    setIsChatOpen(!isChatOpen);
   };
 
   const dispatch = useDispatch();

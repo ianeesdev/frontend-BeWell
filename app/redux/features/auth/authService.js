@@ -79,6 +79,13 @@ const saveOnboardingResponses = async (token, data) => {
 const logout = () => {
   localStorage.clear();
   localStorage.removeItem("user");
+  localStorage.removeItem("appointments");
+  localStorage.removeItem("chats");
+  localStorage.removeItem("messages");
+  localStorage.removeItem("activeChat");
+  localStorage.removeItem("posts");
+  localStorage.removeItem("journals");
+  localStorage.removeItem("therapists");
 };
 
 const authService = {

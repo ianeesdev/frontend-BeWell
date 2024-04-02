@@ -141,7 +141,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      {isDrawerOpen && <AppointmentDrawer onClose={toggleDrawer} />}
+      {isDrawerOpen && <AppointmentDrawer therapistId={therapistId} onClose={toggleDrawer} />}
     </div>
   );
 }

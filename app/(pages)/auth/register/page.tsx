@@ -94,7 +94,9 @@ export default function Page() {
                 onChange={(e) => setPassword2(e.target.value)}
               />
 
-<Button type="submit">{isLoading ? "Creating..." : "Create"}</Button>
+              <Button type="submit">
+                {isLoading ? "Creating..." : "Create"}
+              </Button>
             </form>
           </div>
 
@@ -107,7 +109,10 @@ export default function Page() {
           </div>
 
           <Button variant="outline">
-            <Link href={"http://127.0.0.1:5000/auth/google"} className="flex items-center justify-center gap-x-2">
+            <Link
+              href={"http://127.0.0.1:5002/auth/google"}
+              className="flex items-center justify-center gap-x-2"
+            >
               <GoogleSvg />
               Sign Up with Google
             </Link>

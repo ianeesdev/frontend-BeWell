@@ -1,10 +1,20 @@
 "use client";
 
-import React from "react";
+import React, {useEffect} from "react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+
 import Navbar from "@/components/common/Navbar";
 import TestCard from "@/components/mHealthTests/TestCard";
 
 export default function Page() {
+  const router = useRouter();
+  const { user } = useSelector((state: any) => state.auth);
+
+  useEffect(() => {
+    if (!user?.isLoggedIn) router.push("/auth/login");
+  }, [user, router]);
+
   return (
     <div>
       <div className="p-3">
@@ -16,7 +26,7 @@ export default function Page() {
           <div className="flex justify-evenly">
             <TestCard
               testName="PHQ-9"
-              abbreviation="Pateinet Health Questionnaire"
+              abbreviation="Patient Health Questionnaire"
               link="tests/PHQ9"
             />
 

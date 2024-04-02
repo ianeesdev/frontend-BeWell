@@ -4,14 +4,24 @@ import { Calendar } from "@/components/ui/calendar";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
 
+import { useDispatch, useSelector } from "react-redux";
+import { addAppointment } from "../../app/redux/features/appointments/appointmentSlice";
+
 interface AppointmentDrawerProps {
+  therapistId: string,
   onClose: () => void;
 }
 
-const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ onClose }) => {
+const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ therapistId, onClose }) => {
+  const dispatch = useDispatch();
+
+  const { user } = useSelector((state: any) => state.auth);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
+  const [selectedHour, setSelectedHour] = useState<string | null>(null);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
   const hoursArray = [
@@ -30,24 +40,38 @@ const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ onClose }) => {
   ];
 
   useEffect(() => {
-    // Add event listener when component mounts to disable scrolling on the body
     document.body.style.overflow = "hidden";
-
-    // Clean up function to remove event listener when component unmounts
     return () => {
-      document.body.style.overflow = ""; // Re-enable scrolling when component unmounts
+      document.body.style.overflow = "";
     };
-  }, []); // Run this effect only once when component mounts
+  }, []);
+
+  const handleHourClick = (hour: string) => {
+    setSelectedHour(hour);
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Add your logic to handle form submission here
-    console.log("Name:", name);
-    console.log("Email:", email);
+
+    var dateTime;
+    if (date && selectedHour) {
+      const [hour, minute] = selectedHour.split(":");
+      dateTime = new Date(date);
+      dateTime.setHours(parseInt(hour));
+      dateTime.setMinutes(parseInt(minute || "0"));
+    }
+
+    const payload = {
+      userId: user?._id,
+      therapistId: therapistId,
+      dateTime: dateTime
+    }
+
+    dispatch(addAppointment(payload));
     // Reset form fields
     setName("");
     setEmail("");
-    // Close the drawer
+    setPhoneNumber("");
     onClose();
   };
 
@@ -76,7 +100,10 @@ const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ onClose }) => {
               {hoursArray.map((hour, index) => (
                 <div
                   key={index}
-                  className="border-gray-300 border-[1px] w-[7rem] p-2 text-center rounded-lg cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleHourClick(hour)}
+                  className={`border-gray-300 border-[1px] w-[7rem] p-2 text-center rounded-lg cursor-pointer hover:bg-gray-100 ${
+                    selectedHour === hour ? "bg-blue-500 text-white" : ""
+                  }`}
                 >
                   {hour}
                 </div>
@@ -115,8 +142,8 @@ const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ onClose }) => {
             <InputField
               type="text"
               placeholder="Phone Number"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
             />
 
             <div className="self-center">

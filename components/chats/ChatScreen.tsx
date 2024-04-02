@@ -34,6 +34,7 @@ const ChatScreen = ({ chatId }: ChatScreenProps) => {
   // Scroll to bottom when component mounts or messages change
   useEffect(() => {
     scrollToBottom();
+    // dispatch(getMessages(chatId))
   }, []);
 
   // // Initialize socket connection

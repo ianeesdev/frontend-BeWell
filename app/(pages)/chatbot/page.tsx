@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/common/Navbar";
 import InputField from "@/components/common/InputField";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 import { LuSendHorizonal } from "react-icons/lu";
 import Button from "@/components/common/Button";
@@ -16,6 +18,13 @@ export default function Page() {
   const [prompt, setPrompt] = useState("");
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+  const { user } = useSelector((state: any) => state.auth);
+
+  useEffect(() => {
+    if (!user?.isLoggedIn) router.push("/auth/login");
+  }, [user, router]);
 
   const getResponse = async (event: any) => {
     event.preventDefault();
@@ -33,7 +42,7 @@ export default function Page() {
 
     try {
       const response = await axios.post(
-        "https://5472-154-81-224-94.ngrok-free.app",
+        "https://c61e-101-50-109-43.ngrok-free.app",
         {
           input: prompt,
           session: "hi"
@@ -107,9 +116,9 @@ export default function Page() {
               isLoading ? "Generating response" : 
               messages.map((message, index) => (
                 message?.sender === "user" ? (
-                  <QuestionBox questionText={message?.text} />
+                  <QuestionBox key={index} questionText={message?.text} />
                 ) : (
-                  <AnswerBox answerText={message.text} />
+                  <AnswerBox key={index} answerText={message.text} />
                 )
               ))
             }

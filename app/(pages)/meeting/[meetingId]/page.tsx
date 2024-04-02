@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -14,6 +15,7 @@ export default function Page({ params }: PageProps) {
   const { meetingId } = params;
   const { user } = useSelector((state: any) => state.auth);
   const elementRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const myMeeting = async () => {
@@ -35,6 +37,7 @@ export default function Page({ params }: PageProps) {
             name: "Copy Link",
             url: `http://localhost:3000/meeting/${meetingId}`
           }],
+          onLeaveRoom: () => router.push("/appointment"),
           scenario: {
             mode: ZegoUIKitPrebuilt.OneONoneCall,
           },

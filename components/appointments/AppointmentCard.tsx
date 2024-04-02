@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TbStarHalfFilled } from "react-icons/tb";
 import { LuCalendarClock } from "react-icons/lu";
@@ -28,13 +26,48 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   location,
   rating,
   appointmentDate,
-  appointmentTime,
+  appointmentTime = "history",
 }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { updateChatValue } = useAppContext();
-
   const { user } = useSelector((state: any) => state.auth);
+
+  const dateString = appointmentDate;
+  const date = new Date(dateString);
+
+  const [showJoinButton, setShowJoinButton] = useState(false);
+
+  useEffect(() => {
+    const currentDateTime = new Date();
+    if (
+      currentDateTime.getFullYear() === date.getFullYear() &&
+      currentDateTime.getMonth() === date.getMonth() &&
+      currentDateTime.getDate() === date.getDate() &&
+      currentDateTime.getHours() === date.getHours() &&
+      currentDateTime.getMinutes() === date.getMinutes()
+    ) {
+      setShowJoinButton(true);
+    } else {
+      setShowJoinButton(false);
+    }
+  }, []);
+
+  const dateOptions = {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  };
+
+  const timeOptions = {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  };
+
+  const formattedDate = date.toLocaleString("en-US", dateOptions);
+  const formattedTime = date.toLocaleString("en-US", timeOptions);
 
   const createMeeting = () => {
     const meetingId = crypto.randomUUID();
@@ -43,7 +76,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
   const openChat = () => {
     updateChatValue(true);
-    dispatch(createOrOpenChat({ userId: therapistID })); //TODO: no need to store current chat, when clicked, create new chat and return all the chats of user, now when user click on the individual chat, we can get the id of chat and then use that to send/receive messages
+    dispatch(createOrOpenChat({ userId: therapistID }));
   };
 
   return (
@@ -64,19 +97,26 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <div className="flex items-center gap-2">
             <LuCalendarClock size={30} />
             <div className="text-lg text-main font-medium">
-              <p>{appointmentDate}</p>
-              <p>{appointmentTime}</p>
+              <p>{formattedDate}</p>
+              <p>{formattedTime}</p>
             </div>
           </div>
 
           <div className="flex gap-4">
-            <Button
-              variant="outline"
-              className="px-10 py-2"
-              onClick={createMeeting}
-            >
-              Join Now
-            </Button>
+            {/* {showJoinButton && ( */}
+            {
+              appointmentTime !== "history" && (
+                <Button
+                  variant="outline"
+                  className="px-10 py-2"
+                  onClick={createMeeting}
+                >
+                  Join Now
+                </Button>
+
+              )
+            }
+            {/* )} */}
             <Button variant="outline" className="px-10 py-2" onClick={openChat}>
               Send Message
             </Button>

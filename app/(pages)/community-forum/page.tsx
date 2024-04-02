@@ -157,7 +157,7 @@ export default function Page() {
                       <div>
                         <div className="flex justify-between items-center">
                           <h2 className="text-lg font-semibold">
-                            {post.isAnonymous ? "Anonymous" : post.author.username}
+                            {post.isAnonymous ? "Anonymous" : post?.author?.username}
                           </h2>
                           <BsThreeDots size={30} />
                         </div>

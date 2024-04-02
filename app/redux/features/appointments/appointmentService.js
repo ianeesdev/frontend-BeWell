@@ -4,7 +4,10 @@ const API_URL = "http://127.0.0.1:5001/appointments/";
 
 // Add appointment
 const addAppointment = async (userData) => {
-  const response = await axios.post(`${API_URL}add`, userData);
+  const response = await axios.post(`${API_URL}add/${userData.userId}`, {
+    therapistId: userData?.therapistId,
+    dateTime: userData?.dateTime,
+  });
 
   if (response.data) {
     localStorage.setItem("appointments", JSON.stringify(response.data.data));
@@ -26,7 +29,7 @@ const getAppointments = async (userId) => {
 
 const appointmentService = {
   addAppointment,
-  getAppointments
+  getAppointments,
 };
 
 export default appointmentService;
