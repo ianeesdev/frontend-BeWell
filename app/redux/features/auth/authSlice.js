@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authService";
 
 // Get user from localStorage
-const user = JSON.parse(localStorage.getItem("user"));
+var user;
+if (typeof window !== 'undefined'){
+  user = JSON.parse(localStorage.getItem("user"));
+}
 
 const initialState = {
   user: user ? user : null,
@@ -99,6 +102,25 @@ export const saveOnboardingResponses = createAsyncThunk(
     try {
       const token = thunkAPI.getState().auth.user.token;
       return await authService.saveOnboardingResponses(token, data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Save user assessment test results
+export const addTestResult = createAsyncThunk(
+  "auth/addTestResult",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.addTestResult(token, data);
     } catch (error) {
       const message =
         (error.response &&
@@ -218,6 +240,19 @@ export const authSlice = createSlice({
         state.message = "";
       })
       .addCase(saveOnboardingResponses.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(addTestResult.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addTestResult.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = "";
+      })
+      .addCase(addTestResult.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

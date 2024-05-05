@@ -75,6 +75,19 @@ const saveOnboardingResponses = async (token, data) => {
   return response.data;
 };
 
+// Save user assessment test results
+const addTestResult = async (token, data) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.post(API_URL + `addTestResult`, data, config);
+
+  return response.data;
+};
+
 // Logout user
 const logout = () => {
   localStorage.clear();
@@ -95,7 +108,8 @@ const authService = {
   resetPassword,
   login,
   googleAuth,
-  saveOnboardingResponses
+  saveOnboardingResponses,
+  addTestResult
 };
 
 export default authService;

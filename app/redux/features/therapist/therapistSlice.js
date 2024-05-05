@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import therapistService from "./therapistService";
 
 // Get therapists from localStorage
-const therapists = JSON.parse(localStorage.getItem("therapists"));
+var therapists;
+if (typeof window !== undefined) {
+  therapists = JSON.parse(localStorage.getItem("therapists"));
+}
 
 const initialState = {
   therapists: therapists ? therapists : null,

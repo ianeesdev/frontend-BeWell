@@ -1,5 +1,4 @@
 "use client";
-"use client";
 
 import React, { useState, useEffect } from "react";
 import Button from "@/components/common/Button";
@@ -13,8 +12,10 @@ import phq9Sliders from "@/lib/phq9Questions";
 import gad7Sliders from "@/lib/gad7Questions";
 import dass42Sliders from "@/lib/dass42Questions";
 
-import { useRouter } from "next/navigation";
 import CompletionPopup from "@/components/mHealthTests/CompletionPopup";
+
+import { useDispatch } from "react-redux";
+import { addTestResult } from "@/app/redux/features/auth/authSlice";
 
 interface PageProps {
   params: {
@@ -24,6 +25,7 @@ interface PageProps {
 
 export default function Page({ params }: PageProps) {
   const { testName } = params;
+  const dispatch = useDispatch();
   const [selectedTest, setSelectedTest] = useState(null);
   const [testScore, setTestScore] = useState(0);
   const [prediction, setPrediction] = useState("");
@@ -58,13 +60,32 @@ export default function Page({ params }: PageProps) {
         const optionText = score.optionText;
         return acc + scores[optionText];
       }, 0);
+
       const predict =
         testName === "PHQ9"
           ? determinePHQ9Severity(totalScore)
           : determineGAD7Severity(totalScore);
+
       setTestScore(totalScore);
       setPrediction(predict);
       setShowSuccessModal(true);
+
+      const responses = selectedTest?.map((item: any, index: number) => {
+        return {
+          questionText: item.question,
+          selectedOptionText: answers[index].optionText,
+        };
+      });
+
+      const payload = {
+        testName: testName,
+        score: totalScore,
+        prediction: predict,
+        date: Date.now(),
+        userResponses: responses,
+      };
+      
+      dispatch(addTestResult(payload));
     }
   };
 
@@ -96,13 +117,13 @@ export default function Page({ params }: PageProps) {
 
   function determinePHQ9Severity(score: number) {
     if (score >= 0 && score <= 4) {
-      return "None-minimal Depression";
+      return "Minimal Depression";
     } else if (score >= 5 && score <= 9) {
       return "Mild Depression";
     } else if (score >= 10 && score <= 14) {
       return "Moderate Depression";
     } else if (score >= 15 && score <= 19) {
-      return "Moderately severe Depression";
+      return "Moderately Severe Depression";
     } else if (score >= 20 && score <= 27) {
       return "Severe Depression";
     } else {

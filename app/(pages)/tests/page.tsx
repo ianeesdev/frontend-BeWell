@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 
 import Navbar from "@/components/common/Navbar";
 import TestCard from "@/components/mHealthTests/TestCard";
+import Button from "@/components/common/Button";
+import Link from "next/link";
 
 export default function Page() {
   const router = useRouter();
@@ -21,7 +23,10 @@ export default function Page() {
         <Navbar />
       </div>
       <div className="w-[92%] mx-auto flex flex-col gap-10 mt-[3rem] relative">
-        <h1 className="text-3xl font-semibold">Assessment Tests</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-semibold">Assessment Tests</h1>
+          <Link href="/tests/history"><Button variant="outline">View History</Button></Link>
+        </div>
         <div className="mt-5">
           <div className="flex justify-evenly">
             <TestCard

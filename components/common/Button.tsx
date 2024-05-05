@@ -33,7 +33,7 @@ const Button: React.FC<ButtonProps> = ({
       break;
     case "outline":
       variantClasses =
-        "border border-priamry text-deepAqua hover:bg-deepAqua hover:text-white";
+        "border border-deepAqua text-deepAqua hover:bg-deepAqua hover:text-white";
       break;
     case "tertiary":
       variantClasses =
