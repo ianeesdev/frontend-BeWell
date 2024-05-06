@@ -1,6 +1,4 @@
 import Link from "next/link";
-import React from "react";
-import { LuUser2 } from "react-icons/lu";
 import { CgLogOut } from "react-icons/cg";
 import { usePathname } from "next/navigation";
 

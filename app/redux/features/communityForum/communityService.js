@@ -13,6 +13,7 @@ const addPost = async (data) => {
   return response.data;
 };
 
+// Get all posts
 const getPosts = async () => {
   const response = await axios.get(`${API_URL}fetchPosts`);
 
@@ -23,9 +24,23 @@ const getPosts = async () => {
   return response.data;
 };
 
+const addCommentToPost = async (data) => {
+  const response = await axios.post(
+    `${API_URL}addCommentToPost/${data.postId}`,
+    { commentText: data.commentText, userId: data.userId }
+  );
+
+  if (response.data) {
+    localStorage.setItem("posts", JSON.stringify(response.data));
+  }
+
+  return response.data;
+};
+
 const communityService = {
   addPost,
-  getPosts
+  getPosts,
+  addCommentToPost,
 };
 
 export default communityService;

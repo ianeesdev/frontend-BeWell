@@ -48,6 +48,24 @@ export const getPosts = createAsyncThunk(
   }
 );
 
+// Add comment to post
+export const addCommentToPost = createAsyncThunk(
+  "community/addCommentToPost",
+  async (data, thunkAPI) => {
+    try {
+      return await communityService.addCommentToPost(data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const communityForumSlice = createSlice({
   name: "communityForum",
   initialState,
@@ -92,6 +110,23 @@ export const communityForumSlice = createSlice({
         state.message = "";
       })
       .addCase(getPosts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(addCommentToPost.pending, (state) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.message = "";
+      })
+      .addCase(addCommentToPost.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.posts = action.payload;
+        state.message = "";
+      })
+      .addCase(addCommentToPost.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

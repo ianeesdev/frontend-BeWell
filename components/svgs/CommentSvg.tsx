@@ -1,8 +1,10 @@
 import React from "react";
 
-const CommentSvg = () => {
+const CommentSvg = ({ onClick }) => {
   return (
     <svg
+      onClick={onClick}
+      className="cursor-pointer"
       width="24"
       height="25"
       viewBox="0 0 24 25"

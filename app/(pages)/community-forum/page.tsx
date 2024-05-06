@@ -8,23 +8,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import NotificationCard from "@/components/community/NotificationCard";
 import GroupCard from "@/components/community/GroupCard";
-import CommentSvg from "@/components/svgs/CommentSvg";
 
 import { GoHomeFill } from "react-icons/go";
 import { FiSearch } from "react-icons/fi";
-import { GoHeart } from "react-icons/go";
-import { BsThreeDots } from "react-icons/bs";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import {
   addPost,
   getPosts,
+  addCommentToPost,
 } from "../../redux/features/communityForum/communitySlice";
+import PostCard from "@/components/community/PostCard";
 
 export default function Page() {
   const [postText, setPostText] = useState("");
+  const [commentText, setCommentText] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [addComment, setAddComment] = useState(false);
+  const [selectedPostIndex, setSelectedPostIndex] = useState(-1);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -55,6 +57,21 @@ export default function Page() {
       dispatch(getPosts());
     } else router.push("/auth/login");
   }, [user, isError, message, dispatch]);
+
+  const handleCommentBtnClick = (postIndex: number) => {
+    setAddComment(!addComment);
+    setSelectedPostIndex(postIndex);
+  };
+
+  const addCommentToPost = (postId: any) => {
+    dispatch(
+      addCommentToPost({
+        postId: postId,
+        commentText: commentText,
+        userId: user?._id,
+      })
+    );
+  };
 
   return (
     <div className="overflow-hidden h-screen">
@@ -144,35 +161,53 @@ export default function Page() {
               </div>
 
               <div className="overflow-y-auto h-[40rem] pb-[8rem]">
-                {posts && posts?.map((post: any, index: any) => (
-                  <div
-                    key={index}
-                    className="flex flex-col gap-2 pb-3 border-b-2 border-gray-200 p-4 relative"
-                  >
-                    <div className="border-l-2 border-gray-200 ms-5 ps-8">
-                      <Avatar className="h-10 w-10 absolute left-4">
-                        <AvatarImage src="https://github.com/shadcn.png" />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="flex justify-between items-center">
-                          <h2 className="text-lg font-semibold">
-                            {post.isAnonymous ? "Anonymous" : post?.author?.username}
-                          </h2>
-                          <BsThreeDots size={30} />
-                        </div>
-                        <p className="max-w-[95%]">{post.text}</p>
-                        <div className="mt-3 flex gap-4 items-center">
-                          <GoHeart size={22} />
-                          <CommentSvg />
-                        </div>
+                {addComment ? (
+                  <>
+                    <PostCard
+                      personName={
+                        posts[selectedPostIndex]?.isAnonymous
+                          ? "Anonymous"
+                          : posts[selectedPostIndex]?.author.username
+                      }
+                      postText={posts[selectedPostIndex]?.text}
+                      likes="30"
+                      comments="10"
+                    >
+                      <div className="py-3 px-6 flex items-center gap-3">
+                        <InputField
+                          type="text"
+                          placeholder="Comment..."
+                          className="border-0 shadow-none rounded-none px-2"
+                          isTextArea
+                          rows={1}
+                          value={commentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                        />
+
+                        <Button
+                          className="rounded-xl"
+                          onClick={() => addCommentToPost(posts[selectedPostIndex]?._id)}
+                        >
+                          Reply
+                        </Button>
                       </div>
-                    </div>
-                    <div className="ms-5 ps-8">
-                      <p className="text-faded">30 likes . 10 replies</p>
-                    </div>
-                  </div>
-                ))}
+                    </PostCard>
+                  </>
+                ) : (
+                  posts &&
+                  posts?.map((post: any, index: any) => (
+                    <PostCard
+                      key={index}
+                      personName={
+                        post.isAnonymous ? "Anonymous" : post?.author?.username
+                      }
+                      postText={post.text}
+                      onClick={() => handleCommentBtnClick(index)}
+                      likes="30"
+                      comments="10"
+                    />
+                  ))
+                )}
               </div>
             </div>
           </div>

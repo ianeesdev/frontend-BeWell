@@ -19,7 +19,7 @@ const InputField: React.FC<InputFieldProps> = ({
   className,
   onChange,
   isTextArea = false,
-  rows = 3, // Default rows for textarea
+  rows = 3,
   ...rest
 }) => {
   const InputComponent = isTextArea ? "textarea" : "input";
