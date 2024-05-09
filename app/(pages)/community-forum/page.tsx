@@ -26,14 +26,6 @@ import axios from "axios";
 const API_URL = "http://127.0.0.1:5003/community/";
 
 export default function Page() {
-  const [postText, setPostText] = useState("");
-  const [commentText, setCommentText] = useState("");
-  const [isAnonymous, setIsAnonymous] = useState(false);
-  const [addComment, setAddComment] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState(-1);
-
-  const [currentSelectedPost, setCurrentSelectedPost] = useState(null);
-
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -42,7 +34,14 @@ export default function Page() {
     (state: any) => state.communityForum
   );
 
-  const handleAddPost = () => {
+  const [postText, setPostText] = useState("");
+  const [commentText, setCommentText] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [addComment, setAddComment] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(-1);
+  const [currentSelectedPost, setCurrentSelectedPost] = useState(null);
+
+  const handleAddPost = async () => {
     const payload = {
       isAnonymous: isAnonymous,
       text: postText,
@@ -52,6 +51,9 @@ export default function Page() {
     dispatch(addPost(payload));
     setPostText("");
     setIsAnonymous(false);
+
+    const response = await axios.get(`http://localhost:5000/recommendations?user_id=${user?._id}`);
+    console.log(response.data);
   };
 
   useEffect(() => {
@@ -78,6 +80,7 @@ export default function Page() {
     });
 
     setCommentText("");
+    setIsAnonymous(false);
     setCurrentSelectedPost(response.data);
   };
 
@@ -114,13 +117,13 @@ export default function Page() {
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-bold text-2xl">Muhammad Anees</p>
-                    <p className="text-faded text-lg">aneese421@gmail.com</p>
+                    <p className="font-bold text-2xl">{user?.name}</p>
+                    <p className="text-faded text-lg">{user?.email}</p>
                   </div>
                 </div>
                 <p className="text-lg">
                   Joined groups:{" "}
-                  <span className="text-deepAqua font-semibold">4</span>
+                  <span className="text-deepAqua font-semibold">{user?.groups}</span>
                 </p>
               </div>
 
@@ -135,7 +138,7 @@ export default function Page() {
             </div>
           </div>
           <div className="w-[50%]">
-            <div className="border-r-2 border-l-2 border-gray-200">
+            <div className="border-r-2 border-l-2 border-gray-200 overflow-y-auto h-[50rem]">
               <div className="p-4 border-b-2 border-gray-200">
                 <div className="flex gap-2">
                   <Avatar className="h-10 w-10 mt-2">
@@ -168,7 +171,7 @@ export default function Page() {
                 </div>
               </div>
 
-              <div className="overflow-y-auto h-[40rem] pb-[8rem]">
+              <div className="pb-[8rem]">
                 {addComment ? (
                   <div className="flex gap-2">
                     <div className="pt-6 ps-3 w-[3%]">
@@ -266,9 +269,9 @@ export default function Page() {
                     <PostCard
                       key={index}
                       personName={
-                        post.isAnonymous ? "Anonymous" : post?.author?.username
+                        post?.isAnonymous ? "Anonymous" : post?.author.username
                       }
-                      postText={post.text}
+                      postText={post?.text}
                       onClick={() => handleCommentBtnClick(post?._id)}
                       likes="30"
                       comments={post?.comment.length}

@@ -38,7 +38,8 @@ export const getPosts = createAsyncThunk(
   "community/getPosts",
   async (_, thunkAPI) => {
     try {
-      return await communityService.getPosts();
+      const userId = thunkAPI.getState().auth.user._id;
+      return await communityService.getPosts(userId);
     } catch (error) {
       const message =
         (error.response &&
