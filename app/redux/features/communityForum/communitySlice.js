@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import communityService from "./communityService";
 
 // Get posts from localStorage
-const posts = JSON.parse(localStorage.getItem("posts"));
+var posts;
+if (typeof window !== 'undefined'){
+  posts = JSON.parse(localStorage.getItem("posts"));
+}
 
 const initialState = {
   posts: posts ? posts : null,
@@ -123,7 +126,6 @@ export const communityForumSlice = createSlice({
       .addCase(addCommentToPost.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.posts = action.payload;
         state.message = "";
       })
       .addCase(addCommentToPost.rejected, (state, action) => {

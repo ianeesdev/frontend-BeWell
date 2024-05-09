@@ -30,10 +30,6 @@ const addCommentToPost = async (data) => {
     { commentText: data.commentText, userId: data.userId }
   );
 
-  if (response.data) {
-    localStorage.setItem("posts", JSON.stringify(response.data));
-  }
-
   return response.data;
 };
 

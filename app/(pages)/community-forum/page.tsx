@@ -8,25 +8,31 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import NotificationCard from "@/components/community/NotificationCard";
 import GroupCard from "@/components/community/GroupCard";
+import PostCard from "@/components/community/PostCard";
 
-import { GoHomeFill } from "react-icons/go";
+import { GoArrowLeft, GoHomeFill } from "react-icons/go";
 import { FiSearch } from "react-icons/fi";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+
 import {
   addPost,
   getPosts,
   addCommentToPost,
 } from "../../redux/features/communityForum/communitySlice";
-import PostCard from "@/components/community/PostCard";
+import axios from "axios";
+
+const API_URL = "http://127.0.0.1:5003/community/";
 
 export default function Page() {
   const [postText, setPostText] = useState("");
   const [commentText, setCommentText] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [addComment, setAddComment] = useState(false);
-  const [selectedPostIndex, setSelectedPostIndex] = useState(-1);
+  const [selectedPostId, setSelectedPostId] = useState(-1);
+
+  const [currentSelectedPost, setCurrentSelectedPost] = useState(null);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -58,19 +64,21 @@ export default function Page() {
     } else router.push("/auth/login");
   }, [user, isError, message, dispatch]);
 
-  const handleCommentBtnClick = (postIndex: number) => {
-    setAddComment(!addComment);
-    setSelectedPostIndex(postIndex);
+  const handleCommentBtnClick = async (postID: any) => {
+    setSelectedPostId(postID);
+    const response = await axios.get(`${API_URL}fetchPost/${postID}`);
+    setCurrentSelectedPost(response.data);
+    setAddComment(true);
   };
 
-  const addCommentToPost = (postId: any) => {
-    dispatch(
-      addCommentToPost({
-        postId: postId,
-        commentText: commentText,
-        userId: user?._id,
-      })
-    );
+  const addPostComment = async (postId: any) => {
+    const response = await axios.post(`${API_URL}addCommentToPost/${postId}`, {
+      commentText,
+      userId: user?._id,
+    });
+
+    setCommentText("");
+    setCurrentSelectedPost(response.data);
   };
 
   return (
@@ -162,37 +170,96 @@ export default function Page() {
 
               <div className="overflow-y-auto h-[40rem] pb-[8rem]">
                 {addComment ? (
-                  <>
-                    <PostCard
-                      personName={
-                        posts[selectedPostIndex]?.isAnonymous
-                          ? "Anonymous"
-                          : posts[selectedPostIndex]?.author.username
-                      }
-                      postText={posts[selectedPostIndex]?.text}
-                      likes="30"
-                      comments="10"
-                    >
-                      <div className="py-3 px-6 flex items-center gap-3">
-                        <InputField
-                          type="text"
-                          placeholder="Comment..."
-                          className="border-0 shadow-none rounded-none px-2"
-                          isTextArea
-                          rows={1}
-                          value={commentText}
-                          onChange={(e) => setCommentText(e.target.value)}
-                        />
+                  <div className="flex gap-2">
+                    <div className="pt-6 ps-3 w-[3%]">
+                      <GoArrowLeft
+                        size={28}
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setAddComment(!addComment);
+                          dispatch(getPosts());
+                        }}
+                      />
+                    </div>
+                    <div className="w-[97%]">
+                      <PostCard
+                        personName={
+                          currentSelectedPost?.isAnonymous
+                            ? "Anonymous"
+                            : currentSelectedPost?.author.name
+                        }
+                        postText={currentSelectedPost?.text}
+                        likes="30"
+                        comments={currentSelectedPost?.comment.length}
+                      >
+                        <div className="py-3 px-6 flex items-center gap-3">
+                          <InputField
+                            type="text"
+                            placeholder="Comment..."
+                            className="border-0 shadow-none rounded-none px-2"
+                            isTextArea
+                            rows={1}
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                          />
 
-                        <Button
-                          className="rounded-xl"
-                          onClick={() => addCommentToPost(posts[selectedPostIndex]?._id)}
-                        >
-                          Reply
-                        </Button>
-                      </div>
-                    </PostCard>
-                  </>
+                          <Button
+                            className="rounded-xl"
+                            onClick={() => addPostComment(selectedPostId)}
+                          >
+                            Reply
+                          </Button>
+                        </div>
+
+                        {currentSelectedPost?.comment.length > 0 &&
+                          currentSelectedPost.comment.map(
+                            (comment: any, index: number) => (
+                              <PostCard
+                                key={index}
+                                personName={
+                                  comment?.isAnonymous
+                                    ? "Anonymous"
+                                    : comment?.author.name
+                                }
+                                postText={comment?.text}
+                                likes="30"
+                                comments={comment?.comment.length}
+                                onClick={() =>
+                                  handleCommentBtnClick(comment?._id)
+                                }
+                              >
+                                {selectedPostId === comment?._id && (
+                                  <div className="py-3 px-6 flex items-center gap-3">
+                                    <InputField
+                                      type="text"
+                                      placeholder="Comment..."
+                                      className="border-0 shadow-none rounded-none px-2"
+                                      isTextArea
+                                      rows={1}
+                                      value={commentText}
+                                      onChange={(e) =>
+                                        setCommentText(e.target.value)
+                                      }
+                                    />
+
+                                    <Button
+                                      className="rounded-xl"
+                                      onClick={() =>
+                                        addPostComment(
+                                          posts[selectedPostIndex]?._id
+                                        )
+                                      }
+                                    >
+                                      Reply
+                                    </Button>
+                                  </div>
+                                )}
+                              </PostCard>
+                            )
+                          )}
+                      </PostCard>
+                    </div>
+                  </div>
                 ) : (
                   posts &&
                   posts?.map((post: any, index: any) => (
@@ -202,9 +269,9 @@ export default function Page() {
                         post.isAnonymous ? "Anonymous" : post?.author?.username
                       }
                       postText={post.text}
-                      onClick={() => handleCommentBtnClick(index)}
+                      onClick={() => handleCommentBtnClick(post?._id)}
                       likes="30"
-                      comments="10"
+                      comments={post?.comment.length}
                     />
                   ))
                 )}
