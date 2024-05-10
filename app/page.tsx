@@ -7,8 +7,8 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import VideoUploader from "@/components/videoAnalysis/VideoUploader";
 import Button from "@/components/common/Button";
-import axios from "axios";
 import ResultPopup from "@/components/videoAnalysis/ResultPopup";
+import axios from "axios";
 
 export default function Page() {
   const router = useRouter();
@@ -40,7 +40,7 @@ export default function Page() {
     setIsLoading(true);
 
     const response = await axios.post(
-      "https://d1ce-111-68-99-41.ngrok-free.app/process/",
+      "https://2a3b-203-124-40-244.ngrok-free.app/process/",
       formData,
       {
         headers: {

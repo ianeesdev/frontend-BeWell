@@ -18,9 +18,7 @@ export default function Page() {
 
   const router = useRouter();
 
-  const { user } = useSelector(
-    (state: any) => state.auth
-  );
+  const { user } = useSelector((state: any) => state.auth);
 
   const handleInputChange = (index: number, value: string) => {
     const updatedOtp = otp.split("");
@@ -34,9 +32,9 @@ export default function Page() {
     setOtp("");
 
     if (user?.otp == otp) {
-      router.push("/auth/reset-password")
+      router.push("/auth/reset-password");
     } else {
-      alert("Invalid OTP. Try Again.")
+      alert("Invalid OTP. Try Again.");
     }
     setIsLoading(false);
   };
@@ -44,9 +42,13 @@ export default function Page() {
   return (
     <div className="bg-lilacWhite w-full flex">
       <div className="bg-white h-screen flex flex-col justify-center w-1/2">
-        <h1 className="text-deepAqua font-bold text-3xl p-14 absolute top-0">
-          App Logo Here
-        </h1>
+        <Image
+          src="/logo.png"
+          className="p-14 absolute top-0"
+          width={230}
+          height={230}
+          alt="logo"
+        />
         <div className="w-[50%] mx-auto flex flex-col gap-9">
           <div className="text-main flex flex-col gap-10">
             <Progress className="text-deepAqua" value={66} />
@@ -73,15 +75,15 @@ export default function Page() {
                       className="w-full h-full text-center px-5 outline-none rounded-xl border border-gray-300 text-3xl font-bold text-deepAqua bg-white focus:border-none focus:bg-tertiary focus:ring-2 ring-deepAqua "
                       type="text"
                       maxLength={1}
-                      onChange={(e) =>
-                        handleInputChange(index, e.target.value)
-                      }
+                      onChange={(e) => handleInputChange(index, e.target.value)}
                       required
                     />
                   </div>
                 ))}
               </div>
-              <Button type="submit">{isLoading ? "Verifying" : "Continue"}</Button>
+              <Button type="submit">
+                {isLoading ? "Verifying" : "Continue"}
+              </Button>
             </form>
           </div>
         </div>

@@ -49,9 +49,7 @@ export default function Page() {
   return (
     <div className="bg-lilacWhite w-full flex">
       <div className="bg-white h-screen flex flex-col justify-center w-1/2">
-        <h1 className="text-deepAqua font-bold text-3xl p-14 absolute top-0">
-          App Logo Here
-        </h1>
+      <Image src="/logo.png" className="p-14 absolute top-0" width={230} height={230} alt="logo" />
         <div className="w-[50%] mx-auto flex flex-col gap-12">
           <div className="flex justify-between items-center">
             <h2 className="text-4xl text-main font-semibold">Login</h2>
