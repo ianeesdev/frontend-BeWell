@@ -18,7 +18,7 @@ const getPosts = async (userId) => {
   const response = await axios.get(`${API_URL}fetchPosts`);
 
   const flaskResponse = await axios.get(
-    `http://localhost:5000/recommendations?user_id=${userId}`
+    `http://localhost:5011/recommendations?user_id=${userId}`
   );
 
   const dbPosts = response.data;

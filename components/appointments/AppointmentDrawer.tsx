@@ -4,6 +4,8 @@ import { Calendar } from "@/components/ui/calendar";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
 
+import { useRouter } from "next/navigation";
+
 import { useDispatch, useSelector } from "react-redux";
 import { addAppointment } from "../../app/redux/features/appointments/appointmentSlice";
 
@@ -14,6 +16,7 @@ interface AppointmentDrawerProps {
 
 const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ therapistId, onClose }) => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const { user } = useSelector((state: any) => state.auth);
 
@@ -55,9 +58,15 @@ const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ therapistId, onCl
 
     var dateTime;
     if (date && selectedHour) {
-      const [hour, minute] = selectedHour.split(":");
+      const [hour, minute, period] = selectedHour.split(/:| /);
+      let hour24 = parseInt(hour);
+      if (period === "PM" && hour24 !== 12) {
+        hour24 += 12;
+      } else if (period === "AM" && hour24 === 12) {
+        hour24 = 0; // Midnight is 0 in 24-hour format
+      }
       dateTime = new Date(date);
-      dateTime.setHours(parseInt(hour));
+      dateTime.setHours(hour24);
       dateTime.setMinutes(parseInt(minute || "0"));
     }
 
@@ -66,6 +75,8 @@ const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ therapistId, onCl
       therapistId: therapistId,
       dateTime: dateTime
     }
+
+    router.push("/payment");
 
     dispatch(addAppointment(payload));
     // Reset form fields

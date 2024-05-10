@@ -25,7 +25,7 @@ export default function Page() {
         },
       };
       const response = await axios.get(
-        "http://127.0.0.1:5002/auth/getTestsHistroy",
+        "http://127.0.0.1:5000/auth/getTestsHistroy",
         config
       );
 

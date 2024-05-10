@@ -1,7 +1,6 @@
 import axios from "axios";
 
-// const API_URL = "http://127.0.0.1:5000/payment/";
-const API_URL = "https://porkbuns-backend.vercel.app/payment/";
+const API_URL = "http://127.0.0.1:5007/payment/";
 
 // get client secret
 const getClientSecret = async (id, token) => {

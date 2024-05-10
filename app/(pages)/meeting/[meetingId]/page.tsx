@@ -19,8 +19,8 @@ export default function Page({ params }: PageProps) {
 
   useEffect(() => {
     const myMeeting = async () => {
-      const appID = 1039959667;
-      const serverSecret = "f6bddb379bb410e9c4d071bd38188f14";
+      const appID = 1812045985;
+      const serverSecret = "1b4292e3cdaff717f4d0a0f3e19bf09a";
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID,
         serverSecret,

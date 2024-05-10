@@ -12,6 +12,7 @@ import PostCard from "@/components/community/PostCard";
 
 import { GoArrowLeft, GoHomeFill } from "react-icons/go";
 import { FiSearch } from "react-icons/fi";
+import { HiOutlineLogout } from "react-icons/hi";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -21,6 +22,7 @@ import {
   getPosts,
   addCommentToPost,
 } from "../../redux/features/communityForum/communitySlice";
+import { googleAuth } from "../../redux/features/auth/authSlice";
 import axios from "axios";
 
 const API_URL = "http://127.0.0.1:5003/community/";
@@ -41,19 +43,21 @@ export default function Page() {
   const [selectedPostId, setSelectedPostId] = useState(-1);
   const [currentSelectedPost, setCurrentSelectedPost] = useState(null);
 
+  const [groupsData, setGroupsData] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [groupPosts, setGroupPosts] = useState([]);
+
   const handleAddPost = async () => {
     const payload = {
       isAnonymous: isAnonymous,
       text: postText,
       author: user?._id,
+      groupId: selectedGroup?._id || "",
     };
 
     dispatch(addPost(payload));
     setPostText("");
     setIsAnonymous(false);
-
-    const response = await axios.get(`http://localhost:5000/recommendations?user_id=${user?._id}`);
-    console.log(response.data);
   };
 
   useEffect(() => {
@@ -65,6 +69,10 @@ export default function Page() {
       dispatch(getPosts());
     } else router.push("/auth/login");
   }, [user, isError, message, dispatch]);
+
+  useEffect(() => {
+    fetchGroups();
+  }, []);
 
   const handleCommentBtnClick = async (postID: any) => {
     setSelectedPostId(postID);
@@ -82,6 +90,49 @@ export default function Page() {
     setCommentText("");
     setIsAnonymous(false);
     setCurrentSelectedPost(response.data);
+  };
+
+  const fetchGroups = async () => {
+    try {
+      const response = await axios.get(`${API_URL}fetchGroups`);
+      setGroupsData(response.data);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
+  const addMemberToGroup = async () => {
+    const response = await axios.post(`${API_URL}addGroupMember`, {
+      groupId: selectedGroup?._id,
+      memberId: user?._id,
+    });
+    dispatch(googleAuth(user?.token));
+    setGroupsData(response.data);
+  };
+
+  const removeMemberFromGroup = async () => {
+    const response = await axios.post(`${API_URL}removeUser`, {
+      userId: user?._id,
+      groupId: selectedGroup?._id,
+    });
+    dispatch(googleAuth(user?.token));
+    setGroupsData(response.data);
+  }
+
+  const handleGroupItemClick = async (group: any) => {
+    setSelectedGroup(group);
+    const response = await axios.get(`${API_URL}fetchGroupPosts/${group?._id}`);
+    setGroupPosts(response.data.posts);
+  };
+
+  const addGroupPost = async () => {
+    handleAddPost();
+    setTimeout(async () => {
+      const response = await axios.get(
+        `${API_URL}fetchGroupPosts/${selectedGroup?._id}`
+      );
+      setGroupPosts(response.data.posts);
+    }, 2000);
   };
 
   return (
@@ -123,164 +174,274 @@ export default function Page() {
                 </div>
                 <p className="text-lg">
                   Joined groups:{" "}
-                  <span className="text-deepAqua font-semibold">{user?.groups}</span>
+                  <span className="text-deepAqua font-semibold">
+                    {user?.groups}
+                  </span>
                 </p>
               </div>
 
               <div className="flex flex-col gap-4">
                 <p className="text-lg font-semibold">Groups</p>
                 <div className="flex flex-col gap-2">
-                  <GroupCard groupName="Depression" />
-                  <GroupCard groupName="Anxiety" />
-                  <GroupCard groupName="General Discussion" />
+                  {groupsData?.map((group, index) => (
+                    <GroupCard
+                      key={index}
+                      groupName={group?.name}
+                      className={`${
+                        selectedGroup?._id === group?._id &&
+                        "bg-deepAqua text-white hover:bg-deepAqua"
+                      }`}
+                      onClick={() => handleGroupItemClick(group)}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
           </div>
+
           <div className="w-[50%]">
-            <div className="border-r-2 border-l-2 border-gray-200 overflow-y-auto h-[50rem]">
-              <div className="p-4 border-b-2 border-gray-200">
-                <div className="flex gap-2">
-                  <Avatar className="h-10 w-10 mt-2">
+            {selectedGroup && (
+              <div className="flex justify-between items-center bg-gray-100 px-6 py-4 h-[80px]">
+                <div className="flex items-center gap-2.5">
+                  <Avatar className="h-12 w-12">
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  <div className="w-full">
-                    <InputField
-                      type="text"
-                      placeholder="Share your thoughts"
-                      className="border-0 shadow-none rounded-none px-[2px]"
-                      isTextArea
-                      value={postText}
-                      onChange={(e) => setPostText(e.target.value)}
-                    />
-                    <div className="flex justify-end items-center gap-4">
-                      <div className="flex gap-1 items-center">
-                        <Checkbox
-                          className="data-[state=checked]:bg-deepAqua"
-                          checked={isAnonymous}
-                          onCheckedChange={() => setIsAnonymous(!isAnonymous)}
-                        />
-                        <p>Post Anonymously</p>
-                      </div>
-                      <Button className="rounded-xl" onClick={handleAddPost}>
-                        Post
-                      </Button>
-                    </div>
-                  </div>
+                  <p className="text-[18px] font-medium">
+                    {selectedGroup?.name}
+                  </p>
                 </div>
+                {selectedGroup?.members.includes(user?._id) ? (
+                  <HiOutlineLogout size={25} className="cursor-pointer" onClick={removeMemberFromGroup} />
+                ) : (
+                  <Button className="rounded-xl" onClick={addMemberToGroup}>
+                    Join
+                  </Button>
+                )}
               </div>
+            )}
 
-              <div className="pb-[8rem]">
-                {addComment ? (
-                  <div className="flex gap-2">
-                    <div className="pt-6 ps-3 w-[3%]">
-                      <GoArrowLeft
-                        size={28}
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setAddComment(!addComment);
-                          dispatch(getPosts());
-                        }}
-                      />
-                    </div>
-                    <div className="w-[97%]">
-                      <PostCard
-                        personName={
-                          currentSelectedPost?.isAnonymous
-                            ? "Anonymous"
-                            : currentSelectedPost?.author.name
-                        }
-                        postText={currentSelectedPost?.text}
-                        likes="30"
-                        comments={currentSelectedPost?.comment.length}
-                      >
-                        <div className="py-3 px-6 flex items-center gap-3">
-                          <InputField
-                            type="text"
-                            placeholder="Comment..."
-                            className="border-0 shadow-none rounded-none px-2"
-                            isTextArea
-                            rows={1}
-                            value={commentText}
-                            onChange={(e) => setCommentText(e.target.value)}
-                          />
-
-                          <Button
-                            className="rounded-xl"
-                            onClick={() => addPostComment(selectedPostId)}
-                          >
-                            Reply
-                          </Button>
-                        </div>
-
-                        {currentSelectedPost?.comment.length > 0 &&
-                          currentSelectedPost.comment.map(
-                            (comment: any, index: number) => (
-                              <PostCard
-                                key={index}
-                                personName={
-                                  comment?.isAnonymous
-                                    ? "Anonymous"
-                                    : comment?.author.name
-                                }
-                                postText={comment?.text}
-                                likes="30"
-                                comments={comment?.comment.length}
-                                onClick={() =>
-                                  handleCommentBtnClick(comment?._id)
-                                }
+            <div
+              className={`overflow-y-auto ${
+                selectedGroup ? "h-[40rem]" : "h-[45rem]"
+              }`}
+            >
+              <div className="border-r-2 border-l-2 border-gray-200">
+                {/* GROUP HOME */}
+                {selectedGroup ? (
+                  <div>
+                    {selectedGroup?.members.includes(user?._id) && (
+                      <div className="px-7 py-4 border-b-2 border-gray-200">
+                        <div className="flex gap-2">
+                          <Avatar className="h-10 w-10 mt-2">
+                            <AvatarImage src="https://github.com/shadcn.png" />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <div className="w-full">
+                            <InputField
+                              type="text"
+                              placeholder="Share your thoughts"
+                              className="border-0 shadow-none rounded-none px-[2px]"
+                              isTextArea
+                              value={postText}
+                              onChange={(e) => setPostText(e.target.value)}
+                            />
+                            <div className="flex justify-end items-center gap-4">
+                              <div className="flex gap-1 items-center">
+                                <Checkbox
+                                  className="data-[state=checked]:bg-deepAqua"
+                                  checked={isAnonymous}
+                                  onCheckedChange={() =>
+                                    setIsAnonymous(!isAnonymous)
+                                  }
+                                />
+                                <p>Post Anonymously</p>
+                              </div>
+                              <Button
+                                className="rounded-xl"
+                                onClick={addGroupPost}
                               >
-                                {selectedPostId === comment?._id && (
-                                  <div className="py-3 px-6 flex items-center gap-3">
-                                    <InputField
-                                      type="text"
-                                      placeholder="Comment..."
-                                      className="border-0 shadow-none rounded-none px-2"
-                                      isTextArea
-                                      rows={1}
-                                      value={commentText}
-                                      onChange={(e) =>
-                                        setCommentText(e.target.value)
-                                      }
-                                    />
-
-                                    <Button
-                                      className="rounded-xl"
-                                      onClick={() =>
-                                        addPostComment(
-                                          posts[selectedPostIndex]?._id
-                                        )
-                                      }
-                                    >
-                                      Reply
-                                    </Button>
-                                  </div>
-                                )}
-                              </PostCard>
-                            )
-                          )}
-                      </PostCard>
+                                Post
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div className="p-4">
+                      {groupPosts.map((post: any, index: number) => (
+                        <PostCard
+                          key={index}
+                          personName={
+                            post?.isAnonymous
+                              ? "Anonymous"
+                              : post?.author.username
+                          }
+                          postText={post?.text}
+                          likes="30"
+                          comments={post?.comment.length}
+                        />
+                      ))}
                     </div>
                   </div>
                 ) : (
-                  posts &&
-                  posts?.map((post: any, index: any) => (
-                    <PostCard
-                      key={index}
-                      personName={
-                        post?.isAnonymous ? "Anonymous" : post?.author.username
-                      }
-                      postText={post?.text}
-                      onClick={() => handleCommentBtnClick(post?._id)}
-                      likes="30"
-                      comments={post?.comment.length}
-                    />
-                  ))
+                  <>
+                    {/* POSTS */}
+                    <div className="p-4 border-b-2 border-gray-200">
+                      <div className="flex gap-2">
+                        <Avatar className="h-10 w-10 mt-2">
+                          <AvatarImage src="https://github.com/shadcn.png" />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                        <div className="w-full">
+                          <InputField
+                            type="text"
+                            placeholder="Share your thoughts"
+                            className="border-0 shadow-none rounded-none px-[2px]"
+                            isTextArea
+                            value={postText}
+                            onChange={(e) => setPostText(e.target.value)}
+                          />
+                          <div className="flex justify-end items-center gap-4">
+                            <div className="flex gap-1 items-center">
+                              <Checkbox
+                                className="data-[state=checked]:bg-deepAqua"
+                                checked={isAnonymous}
+                                onCheckedChange={() =>
+                                  setIsAnonymous(!isAnonymous)
+                                }
+                              />
+                              <p>Post Anonymously</p>
+                            </div>
+                            <Button
+                              className="rounded-xl"
+                              onClick={handleAddPost}
+                            >
+                              Post
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pb-[8rem]">
+                      {addComment ? (
+                        <div className="flex gap-2">
+                          <div className="pt-6 ps-3 w-[3%]">
+                            <GoArrowLeft
+                              size={28}
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setAddComment(!addComment);
+                                dispatch(getPosts());
+                              }}
+                            />
+                          </div>
+                          <div className="w-[97%]">
+                            <PostCard
+                              personName={
+                                currentSelectedPost?.isAnonymous
+                                  ? "Anonymous"
+                                  : currentSelectedPost?.author.name
+                              }
+                              postText={currentSelectedPost?.text}
+                              likes="30"
+                              comments={currentSelectedPost?.comment.length}
+                            >
+                              <div className="py-3 px-6 flex items-center gap-3">
+                                <InputField
+                                  type="text"
+                                  placeholder="Comment..."
+                                  className="border-0 shadow-none rounded-none px-2"
+                                  isTextArea
+                                  rows={1}
+                                  value={commentText}
+                                  onChange={(e) =>
+                                    setCommentText(e.target.value)
+                                  }
+                                />
+
+                                <Button
+                                  className="rounded-xl"
+                                  onClick={() => addPostComment(selectedPostId)}
+                                >
+                                  Reply
+                                </Button>
+                              </div>
+
+                              {currentSelectedPost?.comment.length > 0 &&
+                                currentSelectedPost.comment.map(
+                                  (comment: any, index: number) => (
+                                    <PostCard
+                                      key={index}
+                                      personName={
+                                        comment?.isAnonymous
+                                          ? "Anonymous"
+                                          : comment?.author.name
+                                      }
+                                      postText={comment?.text}
+                                      likes="30"
+                                      comments={comment?.comment.length}
+                                      onClick={() =>
+                                        handleCommentBtnClick(comment?._id)
+                                      }
+                                    >
+                                      {selectedPostId === comment?._id && (
+                                        <div className="py-3 px-6 flex items-center gap-3">
+                                          <InputField
+                                            type="text"
+                                            placeholder="Comment..."
+                                            className="border-0 shadow-none rounded-none px-2"
+                                            isTextArea
+                                            rows={1}
+                                            value={commentText}
+                                            onChange={(e) =>
+                                              setCommentText(e.target.value)
+                                            }
+                                          />
+
+                                          <Button
+                                            className="rounded-xl"
+                                            onClick={() =>
+                                              addPostComment(
+                                                posts[selectedPostIndex]?._id
+                                              )
+                                            }
+                                          >
+                                            Reply
+                                          </Button>
+                                        </div>
+                                      )}
+                                    </PostCard>
+                                  )
+                                )}
+                            </PostCard>
+                          </div>
+                        </div>
+                      ) : (
+                        posts &&
+                        posts?.map((post: any, index: any) => (
+                          <PostCard
+                            key={index}
+                            personName={
+                              post?.isAnonymous
+                                ? "Anonymous"
+                                : post?.author.username
+                            }
+                            postText={post?.text}
+                            onClick={() => handleCommentBtnClick(post?._id)}
+                            likes="30"
+                            comments={post?.comment.length}
+                          />
+                        ))
+                      )}
+                    </div>
+                  </>
                 )}
               </div>
             </div>
           </div>
+
           <div className="w-[25%]">
             <div className="p-10">
               <div className="flex flex-col gap-4">

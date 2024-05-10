@@ -101,7 +101,7 @@ export default function Page() {
 
           <Button variant="outline">
             <Link
-              href={"http://127.0.0.1:5002/auth/google"}
+              href={"http://127.0.0.1:5000/auth/google"}
               className="flex items-center justify-center gap-x-2"
             >
               <GoogleSvg />

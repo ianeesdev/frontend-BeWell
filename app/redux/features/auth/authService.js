@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:5002/auth/";
+const API_URL = "http://127.0.0.1:5000/auth/";
 
 // Register user
 const register = async (userData) => {
@@ -66,7 +66,11 @@ const saveOnboardingResponses = async (token, data) => {
     },
   };
 
-  const response = await axios.post(API_URL + `onboardingResponses`, data, config);
+  const response = await axios.post(
+    API_URL + `onboardingResponses`,
+    data,
+    config
+  );
 
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
@@ -109,7 +113,7 @@ const authService = {
   login,
   googleAuth,
   saveOnboardingResponses,
-  addTestResult
+  addTestResult,
 };
 
 export default authService;

@@ -2,9 +2,15 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import chatService from "./chatService";
 
 // Get chats and messages from localStorage
-const chats = JSON.parse(localStorage.getItem("chats"));
-const messages = JSON.parse(localStorage.getItem("messages"));
-const activeChat = JSON.parse(localStorage.getItem("activeChat"));
+var chats;
+var messages;
+var activeChat;
+if (typeof window !== undefined) {
+  chats = JSON.parse(localStorage.getItem("chats"));
+  messages = JSON.parse(localStorage.getItem("messages"));
+  activeChat = JSON.parse(localStorage.getItem("activeChat")); 
+}
+
 
 const initialState = {
   activeChat: activeChat ? activeChat : null,
