@@ -52,7 +52,7 @@ export default function Page() {
       isAnonymous: isAnonymous,
       text: postText,
       author: user?._id,
-      groupId: selectedGroup?._id || "",
+      ...(selectedGroup && { groupId: selectedGroup._id })
     };
 
     dispatch(addPost(payload));
@@ -275,10 +275,9 @@ export default function Page() {
                           personName={
                             post?.isAnonymous
                               ? "Anonymous"
-                              : post?.author.username
+                              : post?.author?.username
                           }
                           postText={post?.text}
-                          likes="30"
                           comments={post?.comment.length}
                         />
                       ))}
@@ -342,10 +341,9 @@ export default function Page() {
                               personName={
                                 currentSelectedPost?.isAnonymous
                                   ? "Anonymous"
-                                  : currentSelectedPost?.author.name
+                                  : currentSelectedPost?.author?.username
                               }
                               postText={currentSelectedPost?.text}
-                              likes="30"
                               comments={currentSelectedPost?.comment.length}
                             >
                               <div className="py-3 px-6 flex items-center gap-3">
@@ -377,10 +375,9 @@ export default function Page() {
                                       personName={
                                         comment?.isAnonymous
                                           ? "Anonymous"
-                                          : comment?.author.name
+                                          : comment?.author?.username
                                       }
                                       postText={comment?.text}
-                                      likes="30"
                                       comments={comment?.comment.length}
                                       onClick={() =>
                                         handleCommentBtnClick(comment?._id)
@@ -426,11 +423,10 @@ export default function Page() {
                             personName={
                               post?.isAnonymous
                                 ? "Anonymous"
-                                : post?.author.username
+                                : post?.author?.username
                             }
                             postText={post?.text}
                             onClick={() => handleCommentBtnClick(post?._id)}
-                            likes="30"
                             comments={post?.comment.length}
                           />
                         ))

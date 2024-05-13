@@ -40,7 +40,7 @@ export default function Page() {
     setIsLoading(true);
 
     const response = await axios.post(
-      "https://2a3b-203-124-40-244.ngrok-free.app/process/",
+      "https://cd3a-2407-d000-f-7a35-bc5c-e091-71a8-853c.ngrok-free.app/process/",
       formData,
       {
         headers: {

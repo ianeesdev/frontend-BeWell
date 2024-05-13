@@ -42,7 +42,7 @@ const PostCard: React.FC<PostCardProps> = ({
       </div>
       <div className="ms-5 ps-8">
         <p className="text-faded">
-          {likes} likes . {comments} replies
+          {likes} {comments} replies
         </p>
       </div>
       {children}
