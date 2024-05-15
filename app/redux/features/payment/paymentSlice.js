@@ -12,11 +12,10 @@ const initialState = {
 // get client secret
 export const getClientSecret = createAsyncThunk(
   "payment/getClientSecret",
-  async (_, thunkAPI) => {
+  async (therapistId, thunkAPI) => {
     try {
-      const id = thunkAPI.getState().auth.user._id;
       const token = thunkAPI.getState().auth.user.token;
-      return await paymentService.getClientSecret(id, token);
+      return await paymentService.getClientSecret(therapistId, token);
     } catch (error) {
       const message =
         (error.response &&

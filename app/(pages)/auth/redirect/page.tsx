@@ -16,7 +16,7 @@ export default function Page() {
 
     if (token) {
       dispatch(googleAuth(token));
-      router.push("/appointment");
+      router.push("/");
     }
   }, [router]);
 

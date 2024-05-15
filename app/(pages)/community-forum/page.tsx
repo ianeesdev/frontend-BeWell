@@ -11,7 +11,7 @@ import GroupCard from "@/components/community/GroupCard";
 import PostCard from "@/components/community/PostCard";
 
 import { GoArrowLeft, GoHomeFill } from "react-icons/go";
-import { FiSearch } from "react-icons/fi";
+
 import { HiOutlineLogout } from "react-icons/hi";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -149,8 +149,7 @@ export default function Page() {
           </div>
           <div className="w-[50%] flex justify-center border-b-2 border-r-2 border-l-2 border-gray-200 pb-5">
             <div className="flex gap-10 items-center justify-between">
-              <GoHomeFill size={26} className="text-deepAqua cursor-pointer" />
-              <FiSearch size={26} className="text-faded cursor-pointer" />
+              <GoHomeFill size={26} className="text-deepAqua cursor-pointer" onClick={() => setSelectedGroup(null)} />
             </div>
           </div>
           <div className="w-[25%] border-b-2 border-gray-200 pb-5">

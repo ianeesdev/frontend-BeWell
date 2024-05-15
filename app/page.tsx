@@ -3,19 +3,24 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/common/Navbar";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import VideoUploader from "@/components/videoAnalysis/VideoUploader";
 import Button from "@/components/common/Button";
 import ResultPopup from "@/components/videoAnalysis/ResultPopup";
+
+import { addAnalysisResult } from "./redux/features/auth/authSlice";
 import axios from "axios";
+import Link from "next/link";
 
 export default function Page() {
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const { user } = useSelector((state: any) => state.auth);
 
   useEffect(() => {
-    if (!user?.isLoggedIn) router.push("/auth/login");
+    if (!user?.isLoggedIn) router.push("/landingPage");
   }, [user, router]);
 
   const [userVideo, setUserVideo] = useState(null);
@@ -40,7 +45,7 @@ export default function Page() {
     setIsLoading(true);
 
     const response = await axios.post(
-      "https://cd3a-2407-d000-f-7a35-bc5c-e091-71a8-853c.ngrok-free.app/process/",
+      "https://32d3-202-165-225-159.ngrok-free.app/process/",
       formData,
       {
         headers: {
@@ -49,9 +54,18 @@ export default function Page() {
       }
     );
 
-    setResult(response.data);
+    const data = response.data;
+
+    setResult(data);
     setIsLoading(false);
     setShowPopup(true);
+
+    const payload = {
+      date: Date.now(),
+      depressionPercentage: data?.depression_anxiety_percentage,
+      dominantEmotion: data?.dominant_emotion,
+    };
+    dispatch(addAnalysisResult(payload));
   };
 
   const onClose = () => {
@@ -67,7 +81,12 @@ export default function Page() {
       </div>
       <div className="w-[92%] mx-auto gap-5 mt-[3rem]">
         <div className="flex items-center gap-3">
-          <h1 className="text-3xl font-semibold">Video Analysis</h1>
+          <div className="w-full flex justify-between items-center">
+            <h1 className="text-3xl font-semibold">Video Analysis</h1>
+            <Link href="/analysisHistory">
+              <Button variant="outline">View History</Button>
+            </Link>
+          </div>
         </div>
         <div className="mt-5 size-full flex flex-col gap-5 justify-center items-center">
           <VideoUploader

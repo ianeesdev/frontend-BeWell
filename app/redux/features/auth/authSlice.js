@@ -133,6 +133,25 @@ export const addTestResult = createAsyncThunk(
   }
 );
 
+// Save user video analysis test result
+export const addAnalysisResult = createAsyncThunk(
+  "auth/addAnalysisResult",
+  async (data, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await authService.addAnalysisResult(token, data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 // Logout
 export const logout = createAsyncThunk("auth/logout", async () => {
   await authService.logout();
@@ -253,6 +272,19 @@ export const authSlice = createSlice({
         state.message = "";
       })
       .addCase(addTestResult.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(addAnalysisResult.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addAnalysisResult.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = "";
+      })
+      .addCase(addAnalysisResult.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

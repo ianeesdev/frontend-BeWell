@@ -124,10 +124,10 @@ export default function Page() {
                             (appointment: any, index: any) => (
                               <AppointmentCard
                                 key={index}
-                                therapistID={appointment?.therapistId._id}
-                                name={appointment?.therapistId.name}
-                                specialty={appointment?.therapistId.specialty}
-                                location={appointment?.therapistId.location}
+                                therapistID={appointment?.therapistId?._id}
+                                name={appointment?.therapistId?.name}
+                                specialty={appointment?.therapistId?.specialty}
+                                location={appointment?.therapistId?.location}
                                 rating={4.5}
                                 appointmentDate={appointment?.dateTime}
                                 appointmentTime={appointment?.dateTime}
@@ -138,10 +138,10 @@ export default function Page() {
                             (appointment: any, index: any) => (
                               <AppointmentCard
                                 key={index}
-                                therapistID={appointment?.therapistId._id}
-                                name={appointment?.therapistId.name}
-                                specialty={appointment?.therapistId.specialty}
-                                location={appointment?.therapistId.location}
+                                therapistID={appointment?.therapistId?._id}
+                                name={appointment?.therapistId?.name}
+                                specialty={appointment?.therapistId?.specialty}
+                                location={appointment?.therapistId?.location}
                                 rating={4.5}
                                 appointmentDate={appointment?.dateTime}
                                 appointmentTime={"history"}

@@ -76,7 +76,7 @@ const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ therapistId, onCl
       dateTime: dateTime
     }
 
-    router.push("/payment");
+    router.push(`/payment/?therapistId=${therapistId}`)
 
     dispatch(addAppointment(payload));
     // Reset form fields

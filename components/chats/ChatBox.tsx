@@ -47,7 +47,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ handleCloseClick }) => {
                 onClick={() => setIsChatOpen(false)}
               />
               <div className="flex items-center gap-2">
-                <p>{selectedChat?.users[0].name}</p>
+                <p>{selectedChat?.users[0]?.name}</p>
                 <p className="text-sm text-faded font-regular">Wed 6:55 AM</p>
               </div>
             </span>
@@ -66,7 +66,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ handleCloseClick }) => {
         ) : (
           <div className="text-black flex flex-col gap-3">
             {chats?.map((chat: any, index: number) => (
-              <ChatCard key={index} name={chat?.users[0].name} onClick={() => handleChatCardClick(chat)} />
+              <ChatCard key={index} name={chat?.users[0]?.name} onClick={() => handleChatCardClick(chat)} />
             ))}
           </div>
         )}

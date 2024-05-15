@@ -34,7 +34,7 @@ const TherapistCard: React.FC<TherapistCardProps> = ({
           </div>
         </div>
         <div>
-          <Button variant="tertiary">
+          <Button variant="tertiary" type="button">
             <Link href={`/therapist/profile/?therapistId=${therapistId}`}>View Details</Link>
           </Button>
         </div>

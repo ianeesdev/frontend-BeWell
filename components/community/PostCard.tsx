@@ -35,7 +35,6 @@ const PostCard: React.FC<PostCardProps> = ({
           </div>
           <p className="max-w-[95%]">{postText}</p>
           <div className="mt-3 flex gap-4 items-center">
-            <GoHeart size={22} />
             <CommentSvg onClick={onClick} />
           </div>
         </div>

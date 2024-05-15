@@ -9,18 +9,24 @@ import CheckoutForm from "@/components/payment/CheckoutForm";
 import { useSelector, useDispatch } from "react-redux";
 import { getClientSecret } from "@/app/redux/features/payment/paymentSlice";
 
+import { useSearchParams } from "next/navigation";
+
 const stripePromise = loadStripe(
   "pk_test_51NPTbIAkAJLkCEv2uze6fXuHQaMUBd0LcASvdSVW3si3nE6hUArwNFL0cx9cfVy5arcpJBWsDlYlIMNLUIOdfDpZ009Q4UGOdz"
 );
 
 export default function Page() {
   const dispatch = useDispatch();
+
   const {
     clientSecret: { clientSecret },
   } = useSelector((state: any) => state.payment);
 
+  const searchParams = useSearchParams();
+  const therapistId = searchParams.get("therapistId");
+
   useEffect(() => {
-    dispatch(getClientSecret());
+    dispatch(getClientSecret(therapistId));
   }, []);
 
   const appearance = {

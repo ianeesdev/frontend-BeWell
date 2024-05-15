@@ -67,11 +67,6 @@ export default function Page() {
                     {therapist?.specialty}, {therapist?.location}
                   </p>
                 </div>
-                <div>
-                  <Button variant="secondary" className="text-md px-6 py-3">
-                    Send Message
-                  </Button>
-                </div>
               </div>
               <div className="flex gap-8">
                 <div className="p-6 drop-shadow-xl bg-paleGrey rounded-xl text-center">
