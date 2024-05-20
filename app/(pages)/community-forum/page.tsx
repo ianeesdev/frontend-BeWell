@@ -20,7 +20,6 @@ import { useRouter } from "next/navigation";
 import {
   addPost,
   getPosts,
-  addCommentToPost,
 } from "../../redux/features/communityForum/communitySlice";
 import { googleAuth } from "../../redux/features/auth/authSlice";
 import axios from "axios";
@@ -32,7 +31,7 @@ export default function Page() {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state: any) => state.auth);
-  const { posts, isLoading, isError, isSuccess, message } = useSelector(
+  const { posts, isError, message } = useSelector(
     (state: any) => state.communityForum
   );
 
@@ -68,7 +67,7 @@ export default function Page() {
     if (user?.isLoggedIn) {
       dispatch(getPosts());
     } else router.push("/auth/login");
-  }, [user, isError, message, dispatch]);
+  }, [user, posts, isError, message, dispatch]);
 
   useEffect(() => {
     fetchGroups();
@@ -276,6 +275,8 @@ export default function Page() {
                               ? "Anonymous"
                               : post?.author?.username
                           }
+                          postId={post?._id}
+                          authorId={post?.author?._id}
                           postText={post?.text}
                           comments={post?.comment.length}
                         />
@@ -342,6 +343,8 @@ export default function Page() {
                                   ? "Anonymous"
                                   : currentSelectedPost?.author?.username
                               }
+                              postId={currentSelectedPost?._id}
+                              authorId={currentSelectedPost?.author?._id}
                               postText={currentSelectedPost?.text}
                               comments={currentSelectedPost?.comment.length}
                             >
@@ -376,6 +379,8 @@ export default function Page() {
                                           ? "Anonymous"
                                           : comment?.author?.username
                                       }
+                                      postId={comment?._id}
+                                      authorId={comment?.author?._id}
                                       postText={comment?.text}
                                       comments={comment?.comment.length}
                                       onClick={() =>
@@ -400,7 +405,7 @@ export default function Page() {
                                             className="rounded-xl"
                                             onClick={() =>
                                               addPostComment(
-                                                posts[selectedPostIndex]?._id
+                                                posts[selectedPostId]?._id
                                               )
                                             }
                                           >
@@ -424,6 +429,8 @@ export default function Page() {
                                 ? "Anonymous"
                                 : post?.author?.username
                             }
+                            postId={post?._id}
+                            authorId={post?.author?._id}
                             postText={post?.text}
                             onClick={() => handleCommentBtnClick(post?._id)}
                             comments={post?.comment.length}

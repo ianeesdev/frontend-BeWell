@@ -62,8 +62,15 @@ const addCommentToPost = async (data) => {
   return response.data;
 };
 
+const deletePost = async (data) => {
+  const response = await axios.delete(`${API_URL}deletePost/${data.postId}`);
+
+  return response.data;
+};
+
 const communityService = {
   addPost,
+  deletePost,
   getPosts,
   addCommentToPost,
 };

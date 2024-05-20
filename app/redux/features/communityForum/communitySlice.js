@@ -70,6 +70,24 @@ export const addCommentToPost = createAsyncThunk(
   }
 );
 
+// Delete post
+export const deletePost = createAsyncThunk(
+  "community/deletePost",
+  async (data, thunkAPI) => {
+    try {
+      return await communityService.deletePost(data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const communityForumSlice = createSlice({
   name: "communityForum",
   initialState,
@@ -130,6 +148,22 @@ export const communityForumSlice = createSlice({
         state.message = "";
       })
       .addCase(addCommentToPost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(deletePost.pending, (state) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.message = "";
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = "";
+      })
+      .addCase(deletePost.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
