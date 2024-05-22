@@ -42,30 +42,36 @@ export default function Page() {
     const formData = new FormData();
     formData.append("file", userVideo);
 
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-    const response = await axios.post(
-      "https://32d3-202-165-225-159.ngrok-free.app/process/",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+      const response = await axios.post(
+        "https://a180-2407-d000-f-54e3-c89a-6d38-2535-5d82.ngrok-free.app/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      console.log(response.data)
+      const data = response.data;
+  
+      setResult(data);
+      setIsLoading(false);
+      setShowPopup(true);
+    } catch (error: any) {
+      setIsLoading(false);
+      console.log(error.message)
+    }
 
-    const data = response.data;
-
-    setResult(data);
-    setIsLoading(false);
-    setShowPopup(true);
-
-    const payload = {
-      date: Date.now(),
-      depressionPercentage: data?.depression_anxiety_percentage,
-      dominantEmotion: data?.dominant_emotion,
-    };
-    dispatch(addAnalysisResult(payload));
+    // const payload = {
+    //   date: Date.now(),
+    //   depressionPercentage: data?.depression_anxiety_percentage,
+    //   dominantEmotion: data?.dominant_emotion,
+    // };
+    // dispatch(addAnalysisResult(payload));
   };
 
   const onClose = () => {

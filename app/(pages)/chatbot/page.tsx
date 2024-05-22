@@ -42,7 +42,7 @@ export default function Page() {
 
     try {
       const response = await axios.post(
-        "https://8cd7-2407-d000-f-7a35-bc5c-e091-71a8-853c.ngrok-free.app",
+        "https://d6b3-2407-d000-f-54e3-c89a-6d38-2535-5d82.ngrok-free.app/chat",
         {
           input: prompt,
           session: "hi"
@@ -53,6 +53,8 @@ export default function Page() {
           },
         }
       );
+
+      console.log(response.data)
       const aiResponse = response.data.ai_response;
 
       console.log(aiResponse);

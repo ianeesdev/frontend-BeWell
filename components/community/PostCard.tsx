@@ -8,6 +8,7 @@ import CommentSvg from "../svgs/CommentSvg";
 import { MdOutlineReport } from "react-icons/md";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { deletePost } from "@/app/redux/features/communityForum/communitySlice";
+import axios from "axios";
 
 interface PostCardProps {
   personName: string;
@@ -47,8 +48,15 @@ const PostCard: React.FC<PostCardProps> = ({
     setShowReportModal(true);
   };
 
-  const handleReportSubmit = () => {
-    console.log("Report description:", reportDescription);
+  const handleReportSubmit = async () => {
+    const payload = {
+      reportedItem: postId,
+      reporter: user?._id,
+      description: reportDescription,
+    };
+
+    const response = await axios.post("http://localhost:5003/community/addReport", payload);
+
     setReportDescription("");
     setShowReportModal(false);
   };
@@ -115,12 +123,12 @@ const PostCard: React.FC<PostCardProps> = ({
               placeholder="Describe the issue..."
               value={reportDescription}
               onChange={(e) => setReportDescription(e.target.value)}
-              className="mt-2 p-2 w-full h-24 border rounded focus:outline-none focus:border-blue-500"
+              className="mt-2 p-2 w-full h-24 border rounded focus:outline-none focus:border-deepAqua"
             ></textarea>
             <div className="mt-4 flex justify-end">
               <button
                 onClick={handleReportSubmit}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-500 mr-2"
+                className="bg-deepAqua hover:bg-seaBlue text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring mr-2"
               >
                 Submit
               </button>
