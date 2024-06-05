@@ -42,7 +42,7 @@ export default function Page() {
 
     try {
       const response = await axios.post(
-        "https://d6b3-2407-d000-f-54e3-c89a-6d38-2535-5d82.ngrok-free.app/chat",
+        "https://1496-2407-d000-f-54e3-c89a-6d38-2535-5d82.ngrok-free.app/query",
         {
           input: prompt,
           session: "hi"
@@ -55,7 +55,7 @@ export default function Page() {
       );
 
       console.log(response.data)
-      const aiResponse = response.data.ai_response;
+      const aiResponse = response.data.answer;
 
       console.log(aiResponse);
 
@@ -70,6 +70,7 @@ export default function Page() {
 
       setIsLoading(false);
     } catch (error) {
+      setIsLoading(false)
       console.error("Error in sending message:", error);
     }
   };
