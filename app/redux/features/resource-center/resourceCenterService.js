@@ -6,8 +6,8 @@ const API_URL = "http://127.0.0.1:5004/journals/";
 const addJournal = async (userData) => {
   const response = await axios.post(`${API_URL}add`, userData);
 
-  if (response.data && typeof window !== 'undefined') {
-    global?.localStorage.setItem("journals", JSON.stringify(response.data.data));
+  if (response.data && global?.window !== 'undefined') {
+    localStorage.setItem("journals", JSON.stringify(response.data.data));
   }
 
   return response.data.data;
@@ -17,8 +17,8 @@ const addJournal = async (userData) => {
 const getAllJournalsByUser = async (userId) => {
   const response = await axios.get(`${API_URL}get/${userId}`);
 
-  if (response.data && typeof window !== 'undefined') {
-    global?.localStorage.setItem("journals", JSON.stringify(response.data.data));
+  if (response.data && global?.window !== 'undefined') {
+    localStorage.setItem("journals", JSON.stringify(response.data.data));
   }
 
   return response.data.data;
@@ -28,8 +28,8 @@ const getAllJournalsByUser = async (userId) => {
 const deleteJournal = async (userId, journalId) => {
   const response = await axios.delete(`${API_URL}delete/${userId}/${journalId}`);
 
-  if (response.data && typeof window !== 'undefined') {
-    global?.localStorage.setItem("journals", JSON.stringify(response.data.data));
+  if (response.data && global?.window !== 'undefined') {
+    localStorage.setItem("journals", JSON.stringify(response.data.data));
   }
 
   return response.data.data;

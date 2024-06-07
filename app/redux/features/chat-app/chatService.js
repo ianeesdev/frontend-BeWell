@@ -10,8 +10,8 @@ const createOrOpenChat = async (userId, token) => {
     },
   });
 
-  if (response.data && typeof window !== 'undefined') {
-    global?.localStorage.setItem("activeChat", JSON.stringify(response.data));
+  if (response.data && global?.window !== 'undefined') {
+    localStorage.setItem("activeChat", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -25,8 +25,8 @@ const getUserChats = async (token) => {
     },
   });
 
-  if (response.data && typeof window !== 'undefined') {
-    global?.localStorage.setItem("chats", JSON.stringify(response.data));
+  if (response.data && global?.window !== 'undefined') {
+    localStorage.setItem("chats", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -40,8 +40,8 @@ const sendMessage = async (data, token) => {
     },
   });
 
-  if (response.data && typeof window !== 'undefined') {
-    global?.localStorage.setItem("messages", JSON.stringify(response.data));
+  if (response.data && global?.window !== 'undefined') {
+    localStorage.setItem("messages", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -55,8 +55,8 @@ const getMessages = async (chatId, token) => {
     },
   });
 
-  if (response.data && typeof window !== 'undefined') {
-    global?.localStorage.setItem("messages", JSON.stringify(response.data));
+  if (response.data && global?.window !== 'undefined') {
+    localStorage.setItem("messages", JSON.stringify(response.data));
   }
 
   return response.data;
