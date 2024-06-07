@@ -3,10 +3,6 @@ import appointmentService from "./appointmentService";
 import { getLocalStorageItem } from '../../../../lib/utils.ts';
 
 // Get appointments from localStorage
-// var appointments;
-// if (typeof window !== undefined) {
-//   appointments = JSON.parse(localStorage.getItem("appointments"));
-// }
 const appointments = JSON.parse(getLocalStorageItem("appointments"));
 
 const initialState = {

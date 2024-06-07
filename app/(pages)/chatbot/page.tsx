@@ -42,7 +42,7 @@ export default function Page() {
 
     try {
       const response = await axios.post(
-        "https://1496-2407-d000-f-54e3-c89a-6d38-2535-5d82.ngrok-free.app/query",
+        "https://59e2-2407-d000-f-28c4-99eb-bc25-2d94-f6be.ngrok-free.app/query",
         {
           input: prompt,
           session: "hi"

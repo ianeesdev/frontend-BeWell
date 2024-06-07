@@ -3,18 +3,9 @@ import chatService from "./chatService";
 import { getLocalStorageItem } from '../../../../lib/utils.ts';
 
 // Get chats and messages from localStorage
-// var chats;
-// var messages;
-// var activeChat;
 const chats = JSON.parse(getLocalStorageItem("chats"));
 const messages = JSON.parse(getLocalStorageItem("messages"));
 const activeChat = JSON.parse(getLocalStorageItem("activeChat"));
-
-// if (typeof window !== undefined) {
-//   chats = JSON.parse(localStorage.getItem("chats"));
-//   messages = JSON.parse(localStorage.getItem("messages"));
-//   activeChat = JSON.parse(localStorage.getItem("activeChat")); 
-// }
 
 const initialState = {
   activeChat: activeChat ? activeChat : null,

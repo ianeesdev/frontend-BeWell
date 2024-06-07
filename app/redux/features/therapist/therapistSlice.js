@@ -3,10 +3,6 @@ import therapistService from "./therapistService";
 import { getLocalStorageItem } from '../../../../lib/utils.ts';
 
 // Get therapists from localStorage
-// var therapists;
-// if (typeof window !== undefined) {
-//   therapists = JSON.parse(localStorage.getItem("therapists"));
-// }
 const therapists = JSON.parse(getLocalStorageItem("therapists"));
 
 const initialState = {
