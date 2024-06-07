@@ -10,7 +10,7 @@ const addAppointment = async (userData) => {
   });
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("appointments", JSON.stringify(response.data.data));
+    global?.localStorage.setItem("appointments", JSON.stringify(response.data.data));
   }
 
   return response.data.data;
@@ -21,7 +21,7 @@ const getAppointments = async (userId) => {
   const response = await axios.get(`${API_URL}${userId}`);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("appointments", JSON.stringify(response.data.data));
+    global?.localStorage.setItem("appointments", JSON.stringify(response.data.data));
   }
 
   return response.data.data;

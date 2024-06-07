@@ -7,7 +7,7 @@ const addJournal = async (userData) => {
   const response = await axios.post(`${API_URL}add`, userData);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("journals", JSON.stringify(response.data.data));
+    global?.localStorage.setItem("journals", JSON.stringify(response.data.data));
   }
 
   return response.data.data;
@@ -18,7 +18,7 @@ const getAllJournalsByUser = async (userId) => {
   const response = await axios.get(`${API_URL}get/${userId}`);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("journals", JSON.stringify(response.data.data));
+    global?.localStorage.setItem("journals", JSON.stringify(response.data.data));
   }
 
   return response.data.data;
@@ -29,7 +29,7 @@ const deleteJournal = async (userId, journalId) => {
   const response = await axios.delete(`${API_URL}delete/${userId}/${journalId}`);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("journals", JSON.stringify(response.data.data));
+    global?.localStorage.setItem("journals", JSON.stringify(response.data.data));
   }
 
   return response.data.data;

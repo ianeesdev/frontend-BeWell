@@ -7,7 +7,7 @@ const getAllTherapists = async () => {
   const response = await axios.get(`${API_URL}all`);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("therapists", JSON.stringify(response.data));
+    global?.localStorage.setItem("therapists", JSON.stringify(response.data));
   }
 
   return response.data;

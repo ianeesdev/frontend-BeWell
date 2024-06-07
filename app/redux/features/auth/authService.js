@@ -13,7 +13,7 @@ const login = async (userData) => {
   const response = await axios.post(`${API_URL}login`, userData);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+    global?.localStorage.setItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -30,7 +30,7 @@ const googleAuth = async (token) => {
   const response = await axios.get(`${API_URL}getUser`, config);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+    global?.localStorage.setItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -41,7 +41,7 @@ const forgotPassword = async (email) => {
   const response = await axios.post(`${API_URL}forgot-password`, email);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+    global?.localStorage.setItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -52,7 +52,7 @@ const resetPassword = async (data) => {
   const response = await axios.post(API_URL + `resetPassword`, data);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+    global?.localStorage.setItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -73,7 +73,7 @@ const saveOnboardingResponses = async (token, data) => {
   );
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+    global?.localStorage.setItem("user", JSON.stringify(response.data));
   }
 
   return response.data;

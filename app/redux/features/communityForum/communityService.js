@@ -7,7 +7,7 @@ const addPost = async (data) => {
   const response = await axios.post(`${API_URL}createPost`, data);
 
   if (response.data && typeof window !== 'undefined') {
-    localStorage.setItem("posts", JSON.stringify(response.data));
+    global?.localStorage.setItem("posts", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -52,7 +52,7 @@ const getPosts = async (userId) => {
   //   return response.data;
   // }
   if ( typeof window !== 'undefined') {
-    localStorage.setItem("posts", JSON.stringify(response.data));
+    global?.localStorage.setItem("posts", JSON.stringify(response.data));
 
   }
     return response.data;
