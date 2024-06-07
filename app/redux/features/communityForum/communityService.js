@@ -6,7 +6,7 @@ const API_URL = "http://127.0.0.1:5003/community/";
 const addPost = async (data) => {
   const response = await axios.post(`${API_URL}createPost`, data);
 
-  if (response.data) {
+  if (response.data && typeof window !== 'undefined') {
     localStorage.setItem("posts", JSON.stringify(response.data));
   }
 
@@ -51,7 +51,10 @@ const getPosts = async (userId) => {
   //   localStorage.setItem("posts", JSON.stringify(response.data));
   //   return response.data;
   // }
+  if ( typeof window !== 'undefined') {
     localStorage.setItem("posts", JSON.stringify(response.data));
+
+  }
     return response.data;
 };
 

@@ -10,7 +10,7 @@ const createOrOpenChat = async (userId, token) => {
     },
   });
 
-  if (response.data) {
+  if (response.data && typeof window !== 'undefined') {
     localStorage.setItem("activeChat", JSON.stringify(response.data));
   }
 
@@ -25,7 +25,7 @@ const getUserChats = async (token) => {
     },
   });
 
-  if (response.data) {
+  if (response.data && typeof window !== 'undefined') {
     localStorage.setItem("chats", JSON.stringify(response.data));
   }
 
@@ -40,7 +40,7 @@ const sendMessage = async (data, token) => {
     },
   });
 
-  if (response.data) {
+  if (response.data && typeof window !== 'undefined') {
     localStorage.setItem("messages", JSON.stringify(response.data));
   }
 
@@ -55,7 +55,7 @@ const getMessages = async (chatId, token) => {
     },
   });
 
-  if (response.data) {
+  if (response.data && typeof window !== 'undefined') {
     localStorage.setItem("messages", JSON.stringify(response.data));
   }
 
