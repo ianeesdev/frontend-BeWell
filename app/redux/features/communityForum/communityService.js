@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setLocalStorageItem } from '../../../../lib/utils.ts';
 
 const API_URL = "http://127.0.0.1:5003/community/";
 
@@ -6,8 +7,8 @@ const API_URL = "http://127.0.0.1:5003/community/";
 const addPost = async (data) => {
   const response = await axios.post(`${API_URL}createPost`, data);
 
-  if (response.data && global?.window !== 'undefined') {
-    localStorage.setItem("posts", JSON.stringify(response.data));
+  if (response.data) {
+    setLocalStorageItem("posts", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -52,8 +53,7 @@ const getPosts = async (userId) => {
   //   return response.data;
   // }
   if (global?.window !== 'undefined') {
-    localStorage.setItem("posts", JSON.stringify(response.data));
-
+    setLocalStorageItem("posts", JSON.stringify(response.data));
   }
     return response.data;
 };

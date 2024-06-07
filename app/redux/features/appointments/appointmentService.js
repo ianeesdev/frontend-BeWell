@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setLocalStorageItem } from '../../../../lib/utils.ts';
 
 const API_URL = "http://127.0.0.1:5001/appointments/";
 
@@ -9,8 +10,8 @@ const addAppointment = async (userData) => {
     dateTime: userData?.dateTime,
   });
 
-  if (response.data &&  global?.window !== 'undefined') {
-    localStorage.setItem("appointments", JSON.stringify(response.data.data));
+  if (response.data) {
+    setLocalStorageItem("appointments", JSON.stringify(response.data.data));
   }
 
   return response.data.data;
@@ -20,8 +21,8 @@ const addAppointment = async (userData) => {
 const getAppointments = async (userId) => {
   const response = await axios.get(`${API_URL}${userId}`);
 
-  if (response.data && global?.window !== 'undefined') {
-    localStorage.setItem("appointments", JSON.stringify(response.data.data));
+  if (response.data) {
+    setLocalStorageItem("appointments", JSON.stringify(response.data.data));
   }
 
   return response.data.data;

@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import communityService from "./communityService";
+import { getLocalStorageItem } from '../../../../lib/utils.ts';
 
 // Get posts from localStorage
-var posts;
-if (typeof window !== 'undefined'){
-  posts = JSON.parse(localStorage.getItem("posts"));
-}
+// var posts;
+// if (typeof window !== 'undefined'){
+//   posts = JSON.parse(localStorage.getItem("posts"));
+// }
+const posts = JSON.parse(getLocalStorageItem("posts"));
 
 const initialState = {
   posts: posts ? posts : null,

@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import resourceCenterService from "./resourceCenterService";
+import { getLocalStorageItem } from '../../../../lib/utils.ts';
 
 // Get journals from localStorage
-var journals;
-if (typeof window !== 'undefined'){
-  journals = JSON.parse(localStorage.getItem("journals"));
-}
+// var journals;
+// if (typeof window !== 'undefined'){
+//   journals = JSON.parse(localStorage.getItem("journals"));
+// }
+const journals = JSON.parse(getLocalStorageItem("journals"));
 
 const initialState = {
   journals: journals ? journals : null,

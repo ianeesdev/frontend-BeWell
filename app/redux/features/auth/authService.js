@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setLocalStorageItem, removeLocalStorageItems } from '../../../../lib/utils.ts';
 
 const API_URL = "http://127.0.0.1:5000/auth/";
 
@@ -12,8 +13,8 @@ const register = async (userData) => {
 const login = async (userData) => {
   const response = await axios.post(`${API_URL}login`, userData);
 
-  if (response.data && global?.window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+  if (response.data) {
+    setLocalStorageItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -29,30 +30,30 @@ const googleAuth = async (token) => {
 
   const response = await axios.get(`${API_URL}getUser`, config);
 
-  if (response.data && global?.window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+  if (response.data) {
+    setLocalStorageItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
 };
 
-// forgot passowrd
+// Forgot password
 const forgotPassword = async (email) => {
   const response = await axios.post(`${API_URL}forgot-password`, email);
 
-  if (response.data && global?.window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+  if (response.data) {
+    setLocalStorageItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
 };
 
-// reset passowrd
+// Reset password
 const resetPassword = async (data) => {
   const response = await axios.post(API_URL + `resetPassword`, data);
 
-  if (response.data && global?.window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+  if (response.data) {
+    setLocalStorageItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -72,8 +73,8 @@ const saveOnboardingResponses = async (token, data) => {
     config
   );
 
-  if (response.data && global?.window !== 'undefined') {
-    localStorage.setItem("user", JSON.stringify(response.data));
+  if (response.data) {
+    setLocalStorageItem("user", JSON.stringify(response.data));
   }
 
   return response.data;
@@ -107,15 +108,18 @@ const addAnalysisResult = async (token, data) => {
 
 // Logout user
 const logout = () => {
-  localStorage.clear();
-  localStorage.removeItem("user");
-  localStorage.removeItem("appointments");
-  localStorage.removeItem("chats");
-  localStorage.removeItem("messages");
-  localStorage.removeItem("activeChat");
-  localStorage.removeItem("posts");
-  localStorage.removeItem("journals");
-  localStorage.removeItem("therapists");
+  if (typeof window !== 'undefined') {
+    removeLocalStorageItems([
+      "user",
+      "appointments",
+      "chats",
+      "messages",
+      "activeChat",
+      "posts",
+      "journals",
+      "therapists"
+    ]);
+  }
 };
 
 const authService = {
