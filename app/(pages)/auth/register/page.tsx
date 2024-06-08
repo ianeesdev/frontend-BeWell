@@ -12,6 +12,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { register } from "../../../redux/features/auth/authSlice";
 
+import { toast } from "react-toastify";
+
 export default function Page() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -27,7 +29,7 @@ export default function Page() {
 
   useEffect(() => {
     if (isError) {
-      alert("Error");
+      toast.error(message);
     }
 
     if (isSuccess) {
@@ -35,26 +37,47 @@ export default function Page() {
     }
   }, [user, isError, isSuccess, message, router, dispatch]);
 
-  const onSubmit = (e: any) => {
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const onSubmit = (e) => {
     e.preventDefault();
 
-    if (password !== password2) {
-      alert("Passwords do not match");
-    } else {
-      const userData = {
-        username,
-        email,
-        password,
-      };
-
-      dispatch(register(userData));
+    if (!username || !email || !password || !password2) {
+      toast.error("All fields are required.");
+      return;
     }
+
+    if (!validateEmail(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (password !== password2) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    const userData = {
+      username,
+      email,
+      password,
+    };
+
+    dispatch(register(userData));
   };
 
   return (
     <div className="bg-lilacWhite w-full flex">
       <div className="bg-white h-screen flex flex-col justify-center w-1/2">
-      <Image src="/logo.png" className="p-14 absolute top-0" width={230} height={230} alt="logo" />
+        <Image src="/logo.png" className="p-14 absolute top-0" width={230} height={230} alt="logo" />
         <div className="w-[50%] mx-auto flex flex-col gap-12">
           <div className="flex justify-between items-center">
             <h2 className="text-4xl text-main font-semibold">Register</h2>
@@ -72,24 +95,28 @@ export default function Page() {
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                required={true}
               />
               <InputField
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required={true}
               />
               <InputField
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required={true}
               />
               <InputField
                 type="password"
                 placeholder="Confirm Password"
                 value={password2}
                 onChange={(e) => setPassword2(e.target.value)}
+                required={true}
               />
 
               <Button type="submit">

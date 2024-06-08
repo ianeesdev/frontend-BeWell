@@ -13,6 +13,7 @@ import onboardingSliders from "@/lib/onboardingQuestions";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { saveOnboardingResponses } from "../../redux/features/auth/authSlice";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -30,7 +31,7 @@ export default function Page() {
 
   useEffect(() => {
     if (isError) {
-      alert(message);
+      toast.error(message);
     }
 
     if (isSuccess && user?.onboarded) {

@@ -152,7 +152,7 @@ export default function Page() {
             </div>
           </div>
           <div className="w-[25%] border-b-2 border-gray-200 pb-5">
-            <p className="text-xl font-medium text-center">Activity</p>
+            {/* <p className="text-xl font-medium text-center">Activity</p> */}
           </div>
         </div>
 
@@ -446,7 +446,7 @@ export default function Page() {
 
           <div className="w-[25%]">
             <div className="p-10">
-              <div className="flex flex-col gap-4">
+              {/* <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
                   <p className="font-semibold text-faded text-lg">Latest</p>
                   <NotificationCard personName="Fahad" />
@@ -459,7 +459,7 @@ export default function Page() {
                   <NotificationCard personName="Fahad" />
                   <NotificationCard personName="Fahad" />
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

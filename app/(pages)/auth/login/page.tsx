@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation";
 import { login } from "../../../redux/features/auth/authSlice";
 import { getAllTherapists } from "../../../redux/features/therapist/therapistSlice";
 
+import { toast } from "react-toastify";
+
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,17 +28,38 @@ export default function Page() {
 
   useEffect(() => {
     if (isError) {
-      alert(message);
+      toast.error(message);
     }
 
     if (user?.isLoggedIn) {
       dispatch(getAllTherapists());
+      toast.success("Logged in successfully!");
       user?.onboarded ? router.push("/") : router.push("/onboarding");
     }
   }, [user, isError, isSuccess, message, router, dispatch]);
 
-  const onSubmit = (e: any) => {
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const onSubmit = (e) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      toast.error("All fields are required.");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long.");
+      return;
+    }
 
     const userData = {
       email,
@@ -49,7 +72,13 @@ export default function Page() {
   return (
     <div className="bg-lilacWhite w-full flex">
       <div className="bg-white h-screen flex flex-col justify-center w-1/2">
-      <Image src="/logo.png" className="p-14 absolute top-0" width={230} height={230} alt="logo" />
+        <Image
+          src="/logo.png"
+          className="p-14 absolute top-0"
+          width={230}
+          height={230}
+          alt="logo"
+        />
         <div className="w-[50%] mx-auto flex flex-col gap-12">
           <div className="flex justify-between items-center">
             <h2 className="text-4xl text-main font-semibold">Login</h2>
@@ -67,12 +96,14 @@ export default function Page() {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required={true}
               />
               <InputField
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required={true}
               />
               <Button type="submit">
                 {isLoading ? "Loading..." : "Login"}

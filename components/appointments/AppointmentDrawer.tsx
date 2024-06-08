@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { addAppointment } from "../../app/redux/features/appointments/appointmentSlice";
 
+import { toast } from "react-toastify";
+
 interface AppointmentDrawerProps {
   therapistId: string,
   onClose: () => void;
@@ -55,6 +57,20 @@ const AppointmentDrawer: React.FC<AppointmentDrawerProps> = ({ therapistId, onCl
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (!name || !email || !phoneNumber || !date || !selectedHour) {
+      toast.error("All fields are required.");
+      return;
+    }
+
+    // Check if the selected date is in the past
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Ignore time part
+
+    if (date < now) {
+      toast.error("You cannot select a date in the past.");
+      return;
+    }
 
     var dateTime;
     if (date && selectedHour) {

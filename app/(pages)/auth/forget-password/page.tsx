@@ -13,6 +13,7 @@ import { FaAngleLeft } from "react-icons/fa6";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { forgotPassword } from "../../../redux/features/auth/authSlice";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ export default function Page() {
 
   useEffect(() => {
     if (isError) {
-      alert(message);
+      toast.error(message);
     }
 
     if (isSuccess) {

@@ -10,6 +10,7 @@ interface InputFieldProps {
   ) => void;
   isTextArea?: boolean;
   rows?: number;
+  required?: boolean
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -20,6 +21,7 @@ const InputField: React.FC<InputFieldProps> = ({
   onChange,
   isTextArea = false,
   rows = 3,
+  required,
   ...rest
 }) => {
   const InputComponent = isTextArea ? "textarea" : "input";
@@ -32,6 +34,7 @@ const InputField: React.FC<InputFieldProps> = ({
       value={value}
       onChange={onChange}
       className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 rounded-full w-full text-lg border border-gray-300 px-6 py-3 ${className}`}
+      required
       {...rest}
     />
   );

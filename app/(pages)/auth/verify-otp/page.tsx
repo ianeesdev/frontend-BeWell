@@ -11,6 +11,7 @@ import { FaAngleLeft } from "react-icons/fa6";
 
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [otp, setOtp] = useState("");
@@ -34,7 +35,7 @@ export default function Page() {
     if (user?.otp == otp) {
       router.push("/auth/reset-password");
     } else {
-      alert("Invalid OTP. Try Again.");
+      toast.error("Invalid OTP. Try Again.");
     }
     setIsLoading(false);
   };

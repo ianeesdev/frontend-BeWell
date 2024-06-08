@@ -44,7 +44,7 @@ export default function Page() {
       const response = await axios.post(
         "https://59e2-2407-d000-f-28c4-99eb-bc25-2d94-f6be.ngrok-free.app/query",
         {
-          input: prompt,
+          query: prompt,
           session: "hi"
         },
         {

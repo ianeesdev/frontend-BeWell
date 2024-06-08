@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { resetPassword } from "../../../redux/features/auth/authSlice";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [password, setPassword] = useState("");
@@ -26,7 +27,7 @@ export default function Page() {
 
   useEffect(() => {
     if (isError) {
-      alert(message);
+      toast.error(message);
     }
 
     if (user?.isUpdated) {
@@ -37,7 +38,7 @@ export default function Page() {
   const onSubmit = (e: any) => {
     e.preventDefault();
     if (password !== password2) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
     } else {
       const data = {
         id: user?._id,
