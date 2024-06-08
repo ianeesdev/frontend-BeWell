@@ -23,6 +23,7 @@ import {
 } from "../../redux/features/communityForum/communitySlice";
 import { googleAuth } from "../../redux/features/auth/authSlice";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API_URL = "http://127.0.0.1:5003/community/";
 
@@ -61,13 +62,13 @@ export default function Page() {
 
   useEffect(() => {
     if (isError) {
-      alert(message);
+      toast.error(message);
     }
 
     if (user?.isLoggedIn) {
       dispatch(getPosts());
     } else router.push("/auth/login");
-  }, [user, posts, isError, message, dispatch]);
+  }, [user, isError, message, dispatch]);
 
   useEffect(() => {
     fetchGroups();

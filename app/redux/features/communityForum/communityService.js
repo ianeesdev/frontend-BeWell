@@ -18,44 +18,44 @@ const addPost = async (data) => {
 const getPosts = async (userId) => {
   const response = await axios.get(`${API_URL}fetchPosts`);
 
-  // const flaskResponse = await axios.get(
-  //   `http://localhost:5011/recommendations?user_id=${userId}`
-  // );
+  const flaskResponse = await axios.get(
+    `http://localhost:5011/recommendations?user_id=${userId}`
+  );
 
-  // const dbPosts = response.data;
-  // const recomPosts = flaskResponse.data;
+  const dbPosts = response.data;
+  const recomPosts = flaskResponse.data;
 
-  // let recommendedPosts = [];
+  let recommendedPosts = [];
 
-  // if (dbPosts && recomPosts) {
-  //   // Step 1: Get the ids from recomPosts
-  //   const recomPostIds = recomPosts.map((post) => post._id);
+  if (dbPosts && recomPosts) {
+    // Step 1: Get the ids from recomPosts
+    const recomPostIds = recomPosts.map((post) => post._id);
 
-  //   // Step 2 & 3: Search ids in dbPosts and append matching posts to recommendedPosts
-  //   recomPostIds.forEach((id) => {
-  //     const foundPost = dbPosts.find((post) => post._id === id);
-  //     if (foundPost) {
-  //       recommendedPosts.push(foundPost);
-  //     }
-  //   });
+    // Step 2 & 3: Search ids in dbPosts and append matching posts to recommendedPosts
+    recomPostIds.forEach((id) => {
+      const foundPost = dbPosts.find((post) => post._id === id);
+      if (foundPost) {
+        recommendedPosts.push(foundPost);
+      }
+    });
 
-  //   // Step 4: Include posts from dbPosts that are not already present in recommendedPosts
-  //   dbPosts.forEach((post) => {
-  //     if (!recomPostIds.includes(post._id)) {
-  //       recommendedPosts.push(post);
-  //     }
-  //   });
+    // Step 4: Include posts from dbPosts that are not already present in recommendedPosts
+    dbPosts.forEach((post) => {
+      if (!recomPostIds.includes(post._id)) {
+        recommendedPosts.push(post);
+      }
+    });
 
-  //   localStorage.setItem("posts", JSON.stringify(recommendedPosts));
-  //   return recommendedPosts;
-  // } else {
-  //   localStorage.setItem("posts", JSON.stringify(response.data));
-  //   return response.data;
-  // }
-  if (global?.window !== 'undefined') {
-    setLocalStorageItem("posts", JSON.stringify(response.data));
-  }
+    localStorage.setItem("posts", JSON.stringify(recommendedPosts));
+    return recommendedPosts;
+  } else {
+    localStorage.setItem("posts", JSON.stringify(response.data));
     return response.data;
+  }
+  // if (global?.window !== 'undefined') {
+  //   setLocalStorageItem("posts", JSON.stringify(response.data));
+  // }
+  //   return response.data;
 };
 
 const addCommentToPost = async (data) => {
