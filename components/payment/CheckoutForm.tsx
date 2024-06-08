@@ -56,7 +56,7 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/appointment",
+        return_url: "https://frontend-be-well.vercel.app/appointment",
       },
     });
 
