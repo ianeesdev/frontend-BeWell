@@ -46,7 +46,7 @@ export default function Page() {
       setIsLoading(true);
 
       const response = await axios.post(
-        "https://2318-203-175-78-1.ngrok-free.app/upload",
+        "https://108b-203-124-40-244.ngrok-free.app/upload",
         formData,
         {
           headers: {
@@ -89,9 +89,9 @@ export default function Page() {
         <div className="flex items-center gap-3">
           <div className="w-full flex justify-between items-center">
             <h1 className="text-3xl font-semibold">Video Analysis</h1>
-            <Link href="/analysisHistory">
+            {/* <Link href="/analysisHistory">
               <Button variant="outline">View History</Button>
-            </Link>
+            </Link> */}
           </div>
         </div>
         <div className="mt-5 size-full flex flex-col gap-5 justify-center items-center">

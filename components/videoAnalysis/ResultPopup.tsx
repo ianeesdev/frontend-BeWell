@@ -23,12 +23,12 @@ const ResultPopup = ({ depressionPercentage, dominantEmotion, closeModal }: Prop
           />
           <div className="text-center flex flex-col gap-3">
             <h2 className="text-2xl font-medium">Test Finished</h2>
-            <p className="text-xl font-bold">
+            {/* <p className="text-xl font-bold">
               Your Despression Score is:{" "}
               <span className="font-bold text-3xl text-deepAqua">
                 {depressionPercentage}
               </span>
-            </p>
+            </p> */}
             <p className="text-3xl font-bold text-deepAqua">
               Dominant Emotion: {dominantEmotion}
             </p>
