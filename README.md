@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Be Well
 
-## Getting Started
+## Overview
+This project aims to provide a comprehensive platform for mental health support, connecting clients with therapists, offering mental health assessments, appointment bookings, secure payment processing, personalized recommendations, a resource center, a community forum, an AI chatbot, and an admin panel. Each module is designed to address specific aspects of mental health management, ensuring a seamless and supportive experience for users.
 
-First, run the development server:
+## Modules
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Module 1: User Profiling
+- **Features:**
+  - User account creation and access for clients and therapists.
+  - Sign up via form or Google account, log in, update personal information, reset forgotten passwords, and log out securely.
+  - Client dashboard with analytics on appointments, top-rated professionals, forum posts, and resources.
+  - Therapist dashboard with information about appointments and clients.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Module 2: Mental Health Assessment
+- **Features:**
+  - Integration of screening tests such as:
+    - Patient Health Questionnaire-9 (PHQ-9) for depression
+    - Generalized Anxiety Disorder-7 (GAD-7) for anxiety
+    - Depression, Anxiety, and Stress Scales - 42 (DASS-42)
+  - Depression and anxiety detection through facial feature analysis via uploaded video clips.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Module 3: Appointment Booking
+- **Features:**
+  - Online appointment booking with mental health specialists.
+  - In-app notifications and email or text reminders for appointments.
+  - Communication between clients and therapists through text messages.
+  - Session note-taking for both clients and therapists.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Module 4: Payment Gateway
+- **Features:**
+  - Secure payment processing integrated with Stripe.
+  - Encrypted and secure storage of payment information.
+  - Billing and invoicing system generating invoices for each appointment or service.
 
-## Learn More
+### Module 5: Recommendation System
+- **Features:**
+  - Machine learning module utilizing Natural Language Processing (NLP) for personalized user experiences.
+  - Suggestions of relevant support groups and community forum posts based on user history and mental health conditions.
 
-To learn more about Next.js, take a look at the following resources:
+### Module 6: Resource Center
+- **Features:**
+  - Access to educational resources on mental health issues such as anxiety and depression.
+  - Features for gratitude practice, goal setting, and self-affirmation.
+  - Journaling capabilities to track and manage user journals.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Module 7: Community Forum
+- **Features:**
+  - Online support community for sharing and learning from experiences.
+  - Anonymous post creation and interaction with posts.
+  - Reporting of posts and comments.
+  - Moderated spaces for specific mental health challenges.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Module 8: AI Chatbot
+- **Features:**
+  - Conversational AI chatbot for discussing feelings and thoughts.
+  - Immediate support and resources, including emergency contact numbers and hotlines.
 
-## Deploy on Vercel
+### Module 9: Admin Panel
+- **Features:**
+  - High-privilege panel for managing user issues and monitoring activities.
+  - Verification of therapist accounts.
+  - Management of reported posts and comments.
+  - Addition of resources to the resource center.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Repository Links
+- [Therapist Panel Repository](https://github.com/ianeesdev/bewell-therapist)
+- [Admin Panel Repository](https://github.com/ianeesdev/bewell-admin)
+- [Backend Repository](https://github.com/ianeesdev/BeWell-Backend)
